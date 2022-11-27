@@ -35,7 +35,7 @@ subprojects {
         implementation 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'
 
-//        implementation 'mysql:mysql-connector-java'
+        implementation 'mysql:mysql-connector-java'
     }
 }
 

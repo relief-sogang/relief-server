@@ -23,7 +23,7 @@ public class SampleQueryController {
 
     @PostMapping("/sample")
     public SampleVO sampleQuery(@RequestBody SampleQueryDTO sampleQueryDTO) {
-        SampleVO sampleVO = sampleQueryService.getSample();
+        SampleVO sampleVO = sampleQueryService.getSample(sampleQueryDTO.getId());
         return sampleVO;
     }
 

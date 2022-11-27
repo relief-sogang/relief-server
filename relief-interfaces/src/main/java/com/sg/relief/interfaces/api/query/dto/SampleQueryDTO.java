@@ -10,5 +10,5 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SampleQueryDTO {
-    private String test;
+    private Long id;
 }

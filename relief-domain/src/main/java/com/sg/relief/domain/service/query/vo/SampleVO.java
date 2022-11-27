@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class SampleVO {
-    private String sampleText;
+    private String name;
 }

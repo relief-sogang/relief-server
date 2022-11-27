@@ -10,8 +10,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @SpringBootApplication(exclude = { DataSourceAutoConfiguration.class })
 @EnableAsync
 public class ReliefDomainApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(ReliefDomainApplication.class, args);
-    }
-
+//    public static void main(String[] args) {
+//        SpringApplication.run(ReliefDomainApplication.class, args);
+//    }
 }
