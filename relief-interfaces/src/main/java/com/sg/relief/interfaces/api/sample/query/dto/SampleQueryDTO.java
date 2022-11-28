@@ -1,4 +1,4 @@
-package com.sg.relief.interfaces.api.command.dto;
+package com.sg.relief.interfaces.api.sample.query.dto;
 
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SampleCommandDTO {
-    private String test;
+public class SampleQueryDTO {
+    private Long id;
 }

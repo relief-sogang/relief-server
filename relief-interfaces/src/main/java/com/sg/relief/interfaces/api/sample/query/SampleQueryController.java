@@ -1,8 +1,8 @@
-package com.sg.relief.interfaces.api.query;
+package com.sg.relief.interfaces.api.sample.query;
 
 import com.sg.relief.domain.service.query.SampleQueryService;
 import com.sg.relief.domain.service.query.vo.SampleVO;
-import com.sg.relief.interfaces.api.query.dto.SampleQueryDTO;
+import com.sg.relief.interfaces.api.sample.query.dto.SampleQueryDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.sg.relief.interfaces.api.command;
+package com.sg.relief.interfaces.api.sample.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -4,14 +4,13 @@ package com.sg.relief.interfaces;
 import com.sg.relief.domain.ReliefDomainApplication;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.PropertySource;
 
 
-@PropertySource("classpath:relief-interfaces.properties")
+@PropertySource("classpath:application-interfaces.properties")
 @Slf4j
 @EnableCaching
 @ServletComponentScan
