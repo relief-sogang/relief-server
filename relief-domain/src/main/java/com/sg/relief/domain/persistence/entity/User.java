@@ -19,10 +19,16 @@ public class User {
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private String name;    // 유저 이름
 
     @Column(nullable = false)
-    private String email;
+    private String email; // 유저 이메일
+
+    @Column(nullable = false)
+    private String userId;  // 유저 ID
+
+    @Column
+    private String phoneNumber; // 전화번호
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

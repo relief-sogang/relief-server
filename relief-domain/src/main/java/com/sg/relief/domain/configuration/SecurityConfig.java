@@ -1,5 +1,6 @@
 package com.sg.relief.domain.configuration;
 
+import com.sg.relief.domain.auth.jwt.JwtSuccessHandler;
 import com.sg.relief.domain.auth.service.CustomOAuth2UserService;
 import com.sg.relief.domain.code.Role;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.IdTokenClaimNames;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import javax.annotation.Resource;
 import java.util.Arrays;
@@ -33,6 +35,12 @@ public class SecurityConfig {
 
     @Autowired
     private CustomOAuth2UserService customOAuth2UserService;
+
+    @Autowired
+    JwtSuccessHandler jwtSuccessHandler;
+
+//    @Autowired
+//    private OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
     @Autowired
     private Environment env;
@@ -54,10 +62,14 @@ public class SecurityConfig {
                 .logout().logoutSuccessUrl("/").and()
                 .oauth2Login()
                 .userInfoEndpoint()
-                .userService(customOAuth2UserService);
+                .userService(customOAuth2UserService).and()
+                .successHandler(jwtSuccessHandler)
+        ;
 
         return http.build();
     }
+
+
 
     @Bean
     public ClientRegistrationRepository clientRegistrationRepository() {
