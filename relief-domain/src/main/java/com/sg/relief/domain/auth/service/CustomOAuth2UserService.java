@@ -1,7 +1,6 @@
 package com.sg.relief.domain.auth.service;
 
 import com.sg.relief.domain.auth.OAuthAttributes;
-import com.sg.relief.domain.auth.persistence.entity.SessionUser;
 import com.sg.relief.domain.persistence.entity.User;
 import com.sg.relief.domain.persistence.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,19 +32,23 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
 
-        log.info("{}====>Service", oAuth2UserRequest);
-
         OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
+        // DefaultOAuth2UserService 객체를 성공 정보 바탕으로 만든다
+
         OAuth2User oAuth2User = delegate.loadUser(oAuth2UserRequest);
+        // 생성된 객체로부터 User를 받는다
 
         String registrationId = oAuth2UserRequest.getClientRegistration().getRegistrationId();
-
         String userNameAttributeName = oAuth2UserRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
+        log.info("registrationId = {}", registrationId);
+        log.info("userNameAttributeName = {}", userNameAttributeName);
+        // User로부터 user 정보를 얻는다
 
         OAuthAttributes attributes = OAuthAttributes.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
+        // SuccessHandler 가 사용할 수 있도록 등록해준다
 
         User user = saveOrUpdate(attributes);
-        httpSession.setAttribute("user", new SessionUser(user));
+//        httpSession.setAttribute("user", new SessionUser(user));
 
         return new DefaultOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority(user.getRoleKey()))

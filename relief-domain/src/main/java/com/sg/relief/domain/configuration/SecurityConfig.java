@@ -37,10 +37,7 @@ public class SecurityConfig {
     private CustomOAuth2UserService customOAuth2UserService;
 
     @Autowired
-    JwtSuccessHandler jwtSuccessHandler;
-
-//    @Autowired
-//    private OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private JwtSuccessHandler jwtSuccessHandler;
 
     @Autowired
     private Environment env;
