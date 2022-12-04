@@ -1,6 +1,7 @@
 package com.sg.relief.domain.auth;
 
 import com.sg.relief.domain.auth.code.Role;
+import com.sg.relief.domain.auth.code.UserStatus;
 import com.sg.relief.domain.persistence.entity.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,10 +37,17 @@ public class OAuthAttributes {
         Map<String, Object> kakao_account = (Map<String, Object>) attributes.get("kakao_account");
         Map<String, Object> profile = (Map<String, Object>) kakao_account.get("profile");
 
-        return new OAuthAttributes(attributes,
-                userNameAttributeName,
-                (String) profile.get("nickname"),
-                (String) kakao_account.get("email"));
+        return OAuthAttributes.builder()
+                .name((String) profile.get("nickname"))
+                .email((String) kakao_account.get("email"))
+                .attributes(attributes)
+                .nameAttributeKey(userNameAttributeName)
+                .build();
+
+        //        return new OAuthAttributes(attributes,
+//                userNameAttributeName,
+//                (String) profile.get("nickname"),
+//                (String) kakao_account.get("email"));
     }
 
     private static OAuthAttributes ofGoogle(String userNameAttributeName, Map<String, Object> attributes) {
@@ -62,6 +70,7 @@ public class OAuthAttributes {
                 .name(name)
                 .email(email)
                 .role(Role.USER)
+                .status(UserStatus.CREATED)
                 .build();
     }
 }

@@ -1,6 +1,7 @@
 package com.sg.relief.domain.persistence.entity;
 
 import com.sg.relief.domain.auth.code.Role;
+import com.sg.relief.domain.auth.code.UserStatus;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -33,6 +34,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    @Column(nullable = false)
+    private UserStatus status;
 
 //    @Builder
 //    public User(String name, String email, Role role) {
