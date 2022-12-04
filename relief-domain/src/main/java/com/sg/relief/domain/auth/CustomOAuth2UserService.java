@@ -17,21 +17,24 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
 import java.util.Collections;
+import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
-    @Autowired
-    private UserRepository userRepository;
+//    @Autowired
+    private final UserRepository userRepository;
 
-    @Autowired
-    private HttpSession httpSession;
+//    @Autowired
+    private final HttpSession httpSession;
+
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
 
+        log.info("======== loadUser ========");
         OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
         // DefaultOAuth2UserService 객체를 성공 정보 바탕으로 만든다
 
@@ -48,7 +51,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         // SuccessHandler 가 사용할 수 있도록 등록해준다
 
         User user = saveOrUpdate(attributes);
-//        httpSession.setAttribute("user", new SessionUser(user));
+        httpSession.setAttribute("user", new SessionUser(user));
 
         return new DefaultOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority(user.getRoleKey()))
@@ -58,10 +61,18 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     }
 
     private User saveOrUpdate(OAuthAttributes attributes) {
-        User user = userRepository.findByEmail(attributes.getEmail())
-                .map(entity -> entity.update(attributes.getName()))
-                .orElse(attributes.toEntity());
+        Optional<User> user = userRepository.findByEmail(attributes.getEmail());
+        if(user.isPresent()){
+            log.info("UPDATE: {}", user.get());
+            return userRepository.save(user.get());
+        } else {
+            log.info("CREATE: {}", attributes.toEntity());
+            return userRepository.save(attributes.toEntity());
+        }
+//        User user = userRepository.findByEmail(attributes.getEmail())
+//                .map(entity -> entity.update(attributes.getName()))
+//                .orElse(attributes.toEntity());
 
-        return userRepository.save(user);
+//        return userRepository.save(user);
     }
 }

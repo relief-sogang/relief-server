@@ -1,5 +1,6 @@
 package com.sg.relief.domain.auth;
 
+import com.sg.relief.domain.auth.code.Role;
 import com.sg.relief.domain.persistence.entity.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,16 +44,24 @@ public class OAuthAttributes {
 
     private static OAuthAttributes ofGoogle(String userNameAttributeName, Map<String, Object> attributes) {
 
-        return new OAuthAttributes(attributes,
-                userNameAttributeName,
-                (String) attributes.get("name"),
-                (String) attributes.get("email"));
+        return OAuthAttributes.builder()
+                .name((String) attributes.get("name"))
+                .email((String) attributes.get("email"))
+                .attributes(attributes)
+                .nameAttributeKey(userNameAttributeName)
+                .build();
+
+//        return new OAuthAttributes(attributes,
+//                userNameAttributeName,
+//                (String) attributes.get("name"),
+//                (String) attributes.get("email"));
     }
 
     public User toEntity() {
         return User.builder()
                 .name(name)
                 .email(email)
+                .role(Role.USER)
                 .build();
     }
 }

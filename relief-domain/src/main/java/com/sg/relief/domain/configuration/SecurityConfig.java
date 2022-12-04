@@ -56,19 +56,17 @@ public class SecurityConfig {
                     .hasRole(Role.USER.name()) // User 권한에게만 공개
                     .anyRequest().authenticated() // 나머지 요청은 인증된 사용자(로그인) 에게만 공개
                 .and()
+                    .logout().logoutSuccessUrl("/")
+//                    .invalidateHttpSession(true) // 로그아웃시 세션 제거
+//                    .deleteCookies("JSESSIONID") // 쿠키제거
+//                    .clearAuthentication(true) // 권한정보 제거
+                .and()
 //                .addFilterBefore()
                     .oauth2Login() // oauth2 로그인 설정의 진입점
-                    .userInfoEndpoint() // 로그인 성공 이후 사용자 정보 가져올 때의 설정
-                    .userService(customOAuth2UserService) // 로그인 성공 시 후속조치를 진행할 UserService의 구현체 등록
-                .and()
-                    .defaultSuccessUrl("/test")
                     .successHandler(jwtSuccessHandler) // 로그인 성공 후 핸들러
-                    .failureHandler(null) // 로그인 실패 시 핸들러
-                .and()
-                    .logout().logoutSuccessUrl("/")
-                    .invalidateHttpSession(true) // 로그아웃시 세션 제거
-                    .deleteCookies("JSESSIONID") // 쿠키제거
-                    .clearAuthentication(true) // 권한정보 제거
+//                    .failureHandler(null) // 로그인 실패 시 핸들러
+                .userInfoEndpoint() // 로그인 성공 이후 사용자 정보 가져올 때의 설정
+                .userService(customOAuth2UserService) // 로그인 성공 시 후속조치를 진행할 UserService의 구현체 등록
         ;
 
         return http.build();
@@ -95,13 +93,15 @@ public class SecurityConfig {
     }
 
     private ClientRegistration googleClientRegistration() {
+        log.info("====googleClientRegistration====");
         return ClientRegistration.withRegistrationId("google")
                 .clientId(env.getProperty(CLIENT_PROPERTY_KEY + ".google.client-id"))
                 .clientSecret(env.getProperty(CLIENT_PROPERTY_KEY + ".google.client-secret"))
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
-                .scope("openid", "profile", "email")
+//                .scope(env.getProperty(CLIENT_PROPERTY_KEY + ".google.scope"))
+                .scope("profile", "email")
                 .authorizationUri("https://accounts.google.com/o/oauth2/v2/auth")
                 .tokenUri("https://www.googleapis.com/oauth2/v4/token")
                 .userInfoUri("https://www.googleapis.com/oauth2/v3/userinfo")

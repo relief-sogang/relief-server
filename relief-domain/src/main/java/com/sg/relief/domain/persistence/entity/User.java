@@ -2,16 +2,17 @@ package com.sg.relief.domain.persistence.entity;
 
 import com.sg.relief.domain.auth.code.Role;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
-@NoArgsConstructor
+//@NoArgsConstructor
 //@AllArgsConstructor
 @Getter
 @Setter
 @Table(name="users")
 @Entity
-//@SuperBuilder
+@SuperBuilder
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +24,7 @@ public class User {
     @Column(nullable = false)
     private String email; // 유저 이메일
 
-    @Column(nullable = false)
+    @Column
     private String userId;  // 유저 ID
 
     @Column
@@ -33,17 +34,17 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
-    @Builder
-    public User(String name, String email, Role role) {
-        this.name = name;
-        this.email = email;
-        this.role = role;
-    }
+//    @Builder
+//    public User(String name, String email, Role role) {
+//        this.name = name;
+//        this.email = email;
+//        this.role = role;
+//    }
 
-    public User update(String name) {
-        this.name = name;
-        return this;
-    }
+//    public User update(String name) {
+//        this.name = name;
+//        return this;
+//    }
 
     public String getRoleKey(){
         return this.role.getKey();

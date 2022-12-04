@@ -29,7 +29,7 @@ public class JwtManager {
         Date now = new Date();
 
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-        log.info("{}==>OAuth2User", oAuth2User);
+        log.info("OAuth2User : {}", oAuth2User);
 
         Map<String, Object> header = new HashMap<>();
         header.put("typ", "JWT");
@@ -40,7 +40,7 @@ public class JwtManager {
         claims.put("name", oAuth2User.getAttributes().get("name"));
         claims.put("email", oAuth2User.getAttributes().get("email"));
 
-        log.info("{}=====>CLAIMS", claims);
+        log.info("CLAIMS: {}", claims);
 
         String accessToken = Jwts.builder()
                 .setSubject("user")
@@ -69,8 +69,10 @@ public class JwtManager {
             Claims claims = Jwts.parser()
                     .setSigningKey(secretKey.getBytes())
                     .parseClaimsJws(jwt).getBody();
-            return true;
 
+            log.info("checkClaim : {}", claims);
+
+            return true;
         }catch(ExpiredJwtException e) {
             log.error("Token Expired");
             return false;

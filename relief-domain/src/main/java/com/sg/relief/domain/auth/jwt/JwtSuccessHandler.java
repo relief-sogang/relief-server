@@ -33,9 +33,9 @@ public class JwtSuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws IOException, ServletException {
         try( PrintWriter writer = response.getWriter()) {
-
+            log.info("Authentication : {}", authentication );
             Token jwt = jwtManager.createJwt(authentication);
-            log.info("{}===>TOKEN", jwt );
+            log.info("Jwt : {}", jwt );
             JSONObject json = new JSONObject();
             json.appendField("accessToken",jwt.getAccessToken());
             json.appendField("refreshToken",jwt.getRefreshToken());

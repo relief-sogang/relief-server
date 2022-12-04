@@ -23,7 +23,7 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
     // controller 진입 전에 실행됨. 반환 값이 true일 경우 controller로 진입하고, false인 경우 진입하지 않음
 
-        log.info("====preHandle====");
+        log.info("==== preHandle ====");
         String accessToken = request.getHeader("accessToken");
         log.info("accessToken: {}", accessToken);
 
@@ -31,6 +31,7 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
 //        System.out.println("RefreshToken:" + refreshToken);
 
         if (accessToken != null && jwtManager.checkClaim(accessToken)) {
+            log.info("==== TRUE ====");
             return true;
         }
 
