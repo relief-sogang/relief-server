@@ -1,4 +1,4 @@
-package com.sg.relief.domain.auth.service;
+package com.sg.relief.domain.auth;
 
 import com.sg.relief.domain.auth.OAuthAttributes;
 import com.sg.relief.domain.persistence.entity.User;

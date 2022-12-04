@@ -1,4 +1,4 @@
-package com.sg.relief.interfaces.api.user.query;
+package com.sg.relief.interfaces.api.query;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

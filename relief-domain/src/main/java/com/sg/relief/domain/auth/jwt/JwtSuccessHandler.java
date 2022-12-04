@@ -34,10 +34,11 @@ public class JwtSuccessHandler implements AuthenticationSuccessHandler {
             throws IOException, ServletException {
         try( PrintWriter writer = response.getWriter()) {
 
-            String jwt = jwtManager.createJwt(authentication);
+            Token jwt = jwtManager.createJwt(authentication);
             log.info("{}===>TOKEN", jwt );
             JSONObject json = new JSONObject();
-            json.appendField("accessToken",jwt);
+            json.appendField("accessToken",jwt.getAccessToken());
+            json.appendField("refreshToken",jwt.getRefreshToken());
 
             response.setStatus(HttpStatus.ACCEPTED.value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
@@ -49,4 +50,7 @@ public class JwtSuccessHandler implements AuthenticationSuccessHandler {
             e.printStackTrace();
         }
     }
+
+
+
 }

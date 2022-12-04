@@ -1,8 +1,7 @@
 package com.sg.relief.domain.auth.jwt;
 
 import com.sg.relief.domain.persistence.entity.User;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -18,15 +17,15 @@ import java.util.Map;
 @Slf4j
 @Component
 public class JwtManager {
-//    private final String securityKey = "testSecurityKey"; // TODO : 민감정보는 따로 분리
 
     @Value("${jwt.secret}")
-    private String secret;
+    private String secretKey;
 
-    private final Long expiredTime = 1000 * 60L * 60L * 3L; // 유효시간 3시간
+    private final Long accessTokenExpiredTime = 1000 * 60L * 60L * 3L; // 유효시간 3시간
+    private final Long refreshTokenExpiredTime = 1000 * 60L * 60L * 24L * 14L; // 유효시간 14일
 
 
-    public String createJwt(Authentication authentication) {
+    public Token createJwt(Authentication authentication) {
         Date now = new Date();
 
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
@@ -43,14 +42,49 @@ public class JwtManager {
 
         log.info("{}=====>CLAIMS", claims);
 
-        return Jwts.builder()
+        String accessToken = Jwts.builder()
                 .setSubject("user")
                 .setHeader(header)
                 .setClaims(claims)
-                .setExpiration(new Date(now.getTime() + expiredTime))
-                .signWith(SignatureAlgorithm.HS256, secret)
+                .setExpiration(new Date(now.getTime() + accessTokenExpiredTime))
+                .signWith(SignatureAlgorithm.HS256, secretKey.getBytes())
                 .compact();
+
+        String refreshToken = Jwts.builder()
+                .setSubject("user")
+                .setHeader(header)
+                .setClaims(claims)
+                .setExpiration(new Date(now.getTime() + refreshTokenExpiredTime))
+                .signWith(SignatureAlgorithm.HS256, secretKey.getBytes())
+                .compact();
+
+        return Token.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 
-    //TODO : 토큰 검증 부분 추가
+    public boolean checkClaim(String jwt){
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(secretKey.getBytes())
+                    .parseClaimsJws(jwt).getBody();
+            return true;
+
+        }catch(ExpiredJwtException e) {
+            log.error("Token Expired");
+            return false;
+
+        }catch(JwtException e) {
+            log.error("Token Error");
+            return false;
+        }
+    }
+
+    public Claims getJwtContents(String jwt) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(secretKey.getBytes())
+                .parseClaimsJws(jwt).getBody();
+        return claims;
+    }
 }

@@ -1,8 +1,8 @@
-package com.sg.relief.interfaces.api.sample.query;
+package com.sg.relief.interfaces.api.query;
 
 import com.sg.relief.domain.service.query.SampleQueryService;
 import com.sg.relief.domain.service.query.vo.SampleVO;
-import com.sg.relief.interfaces.api.sample.query.dto.SampleQueryDTO;
+import com.sg.relief.interfaces.api.query.dto.SampleQueryDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +23,7 @@ public class SampleQueryController {
 
     @PostMapping("/sample")
     public SampleVO sampleQuery(@RequestBody SampleQueryDTO sampleQueryDTO) {
+        log.info("{}===>SAMPLE", sampleQueryDTO);
         SampleVO sampleVO = sampleQueryService.getSample(sampleQueryDTO.getId());
         return sampleVO;
     }

@@ -1,8 +1,7 @@
 package com.sg.relief.domain.persistence.entity;
 
-import com.sg.relief.domain.code.Role;
+import com.sg.relief.domain.auth.code.Role;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
