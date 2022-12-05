@@ -7,13 +7,13 @@ import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
-//@NoArgsConstructor
-//@AllArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @Table(name="users")
 @Entity
-@SuperBuilder
+//@SuperBuilder
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,12 +38,13 @@ public class User {
     @Column(nullable = false)
     private UserStatus status;
 
-//    @Builder
-//    public User(String name, String email, Role role) {
-//        this.name = name;
-//        this.email = email;
-//        this.role = role;
-//    }
+    @Builder
+    public User(String name, String email, Role role, UserStatus status) {
+        this.name = name;
+        this.email = email;
+        this.role = role;
+        this.status = status;
+    }
 
 //    public User update(String name) {
 //        this.name = name;

@@ -32,6 +32,7 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
 
         if (accessToken != null && jwtManager.checkClaim(accessToken)) {
             log.info("==== TRUE ====");
+            log.info("DECODE:{}",jwtManager.getJwtContents(accessToken));
             return true;
         }
 
