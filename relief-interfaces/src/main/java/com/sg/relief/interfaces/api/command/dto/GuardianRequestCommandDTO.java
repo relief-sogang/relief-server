@@ -7,10 +7,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class SignupDetailCommandDTO {
-    private String email;
+public class GuardianRequestCommandDTO {
     private String userId;
-    private String userName;
-    private String password;
-    private String phoneNumber;
+    private String guardianId;
+    private String guardianName;
+    private String message;
 }

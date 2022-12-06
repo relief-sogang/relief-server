@@ -26,7 +26,6 @@ public class UserQueryController {
 
     @PostMapping("/checkid")
     public UserIdCheckVO sampleQuery(@RequestBody UserCheckIdQueryDTO userCheckIdQueryDTO) {
-        log.info("checkid: {}", userCheckIdQueryDTO);
         UserIdCheckVO userIdCheckVO = userQueryService.findId(userCheckIdQueryDTO.getId());
         return userIdCheckVO;
     }
