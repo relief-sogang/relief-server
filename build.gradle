@@ -1,5 +1,6 @@
 plugins {
     id 'org.springframework.boot' version '2.7.4'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
 }
 
@@ -29,6 +30,7 @@ subprojects {
     }
 
     dependencies {
+
         implementation 'org.springframework.boot:spring-boot-starter-web'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
@@ -36,6 +38,16 @@ subprojects {
         annotationProcessor 'org.projectlombok:lombok'
 
         implementation 'mysql:mysql-connector-java'
+
+        implementation 'org.springframework.boot:spring-boot-starter-security'
+
+        implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+        implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+
+        implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+        implementation 'io.jsonwebtoken:jjwt:0.9.1'
     }
 }
 
