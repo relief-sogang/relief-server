@@ -1,8 +1,7 @@
 package com.sg.relief.domain.configuration;
 
-import com.sg.relief.domain.auth.jwt.JwtSuccessHandler;
-import com.sg.relief.domain.auth.CustomOAuth2UserService;
-import com.sg.relief.domain.auth.code.Role;
+//import com.sg.relief.domain.auth.jwt.JwtSuccessHandler;
+//import com.sg.relief.domain.auth.service.CustomOAuth2UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,17 +21,20 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Slf4j
 @Configuration
 @EnableWebSecurity
 @PropertySource("classpath:application-oauth.properties")
 public class SecurityConfig {
 
-    @Autowired
-    private CustomOAuth2UserService customOAuth2UserService;
+//    @Autowired
+//    private CustomOAuth2UserService customOAuth2UserService;
 
-    @Autowired
-    private JwtSuccessHandler jwtSuccessHandler;
+//    @Autowired
+//    private JwtSuccessHandler jwtSuccessHandler;
 
     @Autowired
     private Environment env;
@@ -43,30 +45,31 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        log.info("filterChain: {}", http);
         http
                 .csrf().disable()
                 .cors().configurationSource(corsConfigurationSource())
                 .and()
                 .authorizeRequests() // URL 별 권한 접근제어 관리 시작점
-//                .antMatchers(HttpMethod.OPTIONS).permitAll()
                     .antMatchers("/login/**", "/oauth2/**").permitAll()
                     .antMatchers("/", "/css/**", "/images/**", "/js/**") // 권한 관리 대상
                     .permitAll() // 모든 권한에게 공개
                     .antMatchers("/api/**") // 권한 관리 대상
-                    .hasRole(Role.USER.name()) // User 권한에게만 공개
+                .permitAll()
+//                    .hasRole(Role.USER.name()) // User 권한에게만 공개
                     .anyRequest().authenticated() // 나머지 요청은 인증된 사용자(로그인) 에게만 공개
                 .and()
                     .logout().logoutSuccessUrl("/")
 //                    .invalidateHttpSession(true) // 로그아웃시 세션 제거
 //                    .deleteCookies("JSESSIONID") // 쿠키제거
 //                    .clearAuthentication(true) // 권한정보 제거
-                .and()
+//                .and()
 //                .addFilterBefore()
-                    .oauth2Login() // oauth2 로그인 설정의 진입점
-                    .successHandler(jwtSuccessHandler) // 로그인 성공 후 핸들러
+//                    .oauth2Login() // oauth2 로그인 설정의 진입점
+//                    .successHandler(jwtSuccessHandler) // 로그인 성공 후 핸들러
 //                    .failureHandler(null) // 로그인 실패 시 핸들러
-                .userInfoEndpoint() // 로그인 성공 이후 사용자 정보 가져올 때의 설정
-                .userService(customOAuth2UserService) // 로그인 성공 시 후속조치를 진행할 UserService의 구현체 등록
+//                .userInfoEndpoint() // 로그인 성공 이후 사용자 정보 가져올 때의 설정
+//                .userService(customOAuth2UserService) // 로그인 성공 시 후속조치를 진행할 UserService의 구현체 등록
         ;
 
         return http.build();
@@ -89,7 +92,12 @@ public class SecurityConfig {
 
     @Bean
     public ClientRegistrationRepository clientRegistrationRepository() {
-        return new InMemoryClientRegistrationRepository(this.googleClientRegistration());
+
+        List<ClientRegistration> registrations = new ArrayList<>();
+        registrations.add(this.googleClientRegistration());
+        registrations.add(this.kakaoClientRegistration());
+
+        return new InMemoryClientRegistrationRepository(registrations);
     }
 
     private ClientRegistration googleClientRegistration() {
@@ -99,7 +107,7 @@ public class SecurityConfig {
                 .clientSecret(env.getProperty(CLIENT_PROPERTY_KEY + ".google.client-secret"))
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
+                .redirectUri(env.getProperty(CLIENT_PROPERTY_KEY+".google.redirect-uri"))
 //                .scope(env.getProperty(CLIENT_PROPERTY_KEY + ".google.scope"))
                 .scope("profile", "email")
                 .authorizationUri("https://accounts.google.com/o/oauth2/v2/auth")
@@ -110,22 +118,23 @@ public class SecurityConfig {
                 .clientName("Google")
                 .build();
     }
-//
-//    private ClientRegistration kakaoClientRegistration() {
-//        return ClientRegistration.withRegistrationId("kakao")
-//                .clientId("kakao-client-id")
-//                .clientSecret("kakao-client-secret")
-//                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-//                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-//                .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
-//                .scope("profile")
-//                .authorizationUri("https://kauth.kakao.com/oauth/authorize")
-//                .tokenUri("https://kauth.kakao.com/oauth/token")
-//                .userInfoUri("https://kapi.kakao.com/v2/user/me")
-//                .userNameAttributeName(IdTokenClaimNames.SUB)
-////                .jwkSetUri("https://www.googleapis.com/oauth2/v3/certs")
-//                .clientName("Kakao")
-//                .build();
-//    }
+
+    private ClientRegistration kakaoClientRegistration() {
+        log.info("====kakaoClientRegistration====");
+        return ClientRegistration.withRegistrationId("kakao")
+                .clientId(env.getProperty(CLIENT_PROPERTY_KEY + ".kakao.client-id"))
+                .clientSecret(env.getProperty(CLIENT_PROPERTY_KEY + ".kakao.client-secret"))
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .redirectUri(env.getProperty(CLIENT_PROPERTY_KEY+".kakao.redirect-uri"))
+                .scope("profile", "account_email")
+                .authorizationUri("https://kauth.kakao.com/oauth/authorize")
+                .tokenUri("https://kauth.kakao.com/oauth/token")
+                .userInfoUri("https://kapi.kakao.com/v2/user/me")
+                .userNameAttributeName(IdTokenClaimNames.SUB)
+//                .jwkSetUri("https://www.googleapis.com/oauth2/v3/certs")
+                .clientName("kakao")
+                .build();
+    }
 
 }

@@ -1,4 +1,4 @@
-package com.sg.relief.domain.auth.code;
+package com.sg.relief.domain.code;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

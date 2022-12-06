@@ -1,6 +1,6 @@
 package com.sg.relief.interfaces.api.query;
 
-import com.sg.relief.domain.auth.SessionUser;
+//import com.sg.relief.domain.auth.SessionUser;
 import com.sg.relief.domain.service.query.SampleQueryService;
 import com.sg.relief.domain.service.query.vo.SampleVO;
 import com.sg.relief.interfaces.api.query.dto.SampleQueryDTO;

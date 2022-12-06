@@ -1,6 +1,6 @@
 package com.sg.relief.domain.service.command;
 
-import com.sg.relief.domain.auth.code.UserStatus;
+import com.sg.relief.domain.code.UserStatus;
 import com.sg.relief.domain.persistence.entity.User;
 import com.sg.relief.domain.persistence.repository.UserRepository;
 import com.sg.relief.domain.service.command.co.UserDetailCommand;
