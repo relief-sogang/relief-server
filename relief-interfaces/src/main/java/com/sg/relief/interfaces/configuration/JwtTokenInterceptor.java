@@ -1,6 +1,7 @@
 package com.sg.relief.interfaces.configuration;
 
-import com.sg.relief.domain.auth.jwt.JwtManager;
+//import com.sg.relief.domain.auth.jwt.JwtManager;
+import com.sg.relief.domain.auth.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
@@ -17,7 +18,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtTokenInterceptor implements HandlerInterceptor {
 
-    private final JwtManager jwtManager;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
@@ -25,16 +26,12 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
 
         log.info("==== preHandle ====");
         String accessToken = request.getHeader("accessToken");
-        log.info("accessToken: {}", accessToken);
 
-//        String refreshToken = request.getHeader("REFRESH_TOKEN");
-//        System.out.println("RefreshToken:" + refreshToken);
-
-        if (accessToken != null && jwtManager.checkClaim(accessToken)) {
+        if (accessToken != null && jwtTokenProvider.validateToken(accessToken)) {
             log.info("==== TRUE ====");
-            log.info("DECODE:{}",jwtManager.getJwtContents(accessToken));
             return true;
         }
+        log.info("==== FALSE ====");
 
         response.setStatus(401);
         response.setHeader("AccessToken", accessToken);
