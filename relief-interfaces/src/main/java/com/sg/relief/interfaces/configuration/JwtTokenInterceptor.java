@@ -1,6 +1,7 @@
 package com.sg.relief.interfaces.configuration;
 
 //import com.sg.relief.domain.auth.jwt.JwtManager;
+import com.sg.relief.domain.auth.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
@@ -17,29 +18,24 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtTokenInterceptor implements HandlerInterceptor {
 
-//    private final JwtManager jwtManager;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
     // controller 진입 전에 실행됨. 반환 값이 true일 경우 controller로 진입하고, false인 경우 진입하지 않음
 
         log.info("==== preHandle ====");
-        return true;
-//        String accessToken = request.getHeader("accessToken");
-//        log.info("accessToken: {}", accessToken);
-//
-////        String refreshToken = request.getHeader("REFRESH_TOKEN");
-////        System.out.println("RefreshToken:" + refreshToken);
-//
-//        if (accessToken != null && jwtManager.checkClaim(accessToken)) {
-//            log.info("==== TRUE ====");
-//            log.info("DECODE:{}",jwtManager.getJwtContents(accessToken));
-//            return true;
-//        }
-//
-//        response.setStatus(401);
-//        response.setHeader("AccessToken", accessToken);
-//        response.setHeader("msg", "Check the tokens.");
-//        return false;
+        String accessToken = request.getHeader("accessToken");
+
+        if (accessToken != null && jwtTokenProvider.validateToken(accessToken)) {
+            log.info("==== TRUE ====");
+            return true;
+        }
+        log.info("==== FALSE ====");
+
+        response.setStatus(401);
+        response.setHeader("AccessToken", accessToken);
+        response.setHeader("msg", "Check the tokens.");
+        return false;
     }
 }

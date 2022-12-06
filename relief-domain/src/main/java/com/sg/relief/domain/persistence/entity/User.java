@@ -54,14 +54,10 @@ public class User {
         this.modifiedAt = modifiedAt;
     }
 
-//    public User update(String name) {
-//        this.name = name;
-//        return this;
-//    }
 
-    public String getRoleKey(){
-        return this.role.getKey();
-    }
+//    public String getRoleKey(){
+//        return this.role.getKey();
+//    }
 
 
 }

@@ -1,6 +1,8 @@
 package com.sg.relief.interfaces.configuration;
 
 //import com.sg.relief.domain.auth.jwt.JwtManager;
+import com.sg.relief.domain.auth.JwtTokenProvider;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -10,16 +12,16 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Slf4j
 @Configuration
+@RequiredArgsConstructor
 public class WebMvcConfig implements WebMvcConfigurer {
 
-//    @Autowired
-//    private JwtManager jwtManager;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         log.info("{}====>addInterceptors", registry);
-//        registry.addInterceptor(new JwtTokenInterceptor(jwtManager))
-//                .excludePathPatterns("/css/**", "/images/**", "/js/**", "/login/**");
+        registry.addInterceptor(new JwtTokenInterceptor(jwtTokenProvider))
+                .excludePathPatterns("/css/**", "/images/**", "/js/**", "/login/**");
     }
 
     @Override
