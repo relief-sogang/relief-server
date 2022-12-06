@@ -51,4 +51,15 @@ public class UserQueryServiceImpl implements UserQueryService {
                 .guardianList(guardianInfoVOS)
                 .build();
     }
+
+    @Override
+    public GuardianInfoVO getGuardianDetail(String guardianId){
+        User user = userRepository.findByUserId(guardianId).get();
+        return GuardianInfoVO.builder()
+                .name(user.getName())
+                .id(user.getUserId())
+                .email(user.getEmail())
+                .status(user.getStatus().toString())
+                .build();
+    }
 }

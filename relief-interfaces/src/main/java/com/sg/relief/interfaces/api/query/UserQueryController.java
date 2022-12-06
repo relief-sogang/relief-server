@@ -1,9 +1,11 @@
 package com.sg.relief.interfaces.api.query;
 
 import com.sg.relief.domain.service.query.UserQueryService;
+import com.sg.relief.domain.service.query.vo.GuardianInfoVO;
 import com.sg.relief.domain.service.query.vo.GuardianListVO;
 import com.sg.relief.domain.service.query.vo.SampleVO;
 import com.sg.relief.domain.service.query.vo.UserIdCheckVO;
+import com.sg.relief.interfaces.api.query.dto.GuardianDetailQueryDTO;
 import com.sg.relief.interfaces.api.query.dto.GuardianListQueryDTO;
 import com.sg.relief.interfaces.api.query.dto.SampleQueryDTO;
 import com.sg.relief.interfaces.api.query.dto.UserCheckIdQueryDTO;
@@ -31,8 +33,14 @@ public class UserQueryController {
 
 
     @GetMapping("/guardian/list")
-    public GuardianListVO sampleQuery(@RequestBody GuardianListQueryDTO guardianListQueryDTO) {
+    public GuardianListVO guardianList(@RequestBody GuardianListQueryDTO guardianListQueryDTO) {
         GuardianListVO guardianListVO = userQueryService.getGuardianList(guardianListQueryDTO.getUserId());
         return guardianListVO;
+    }
+
+    @GetMapping("/guardian/detail")
+    public GuardianInfoVO guardianDetail(@RequestBody GuardianDetailQueryDTO guardianDetailQueryDTO) {
+        GuardianInfoVO guardianInfoVO = userQueryService.getGuardianDetail(guardianDetailQueryDTO.getGuardianId());
+        return guardianInfoVO;
     }
 }
