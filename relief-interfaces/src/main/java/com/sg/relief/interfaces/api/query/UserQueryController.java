@@ -1,8 +1,10 @@
 package com.sg.relief.interfaces.api.query;
 
 import com.sg.relief.domain.service.query.UserQueryService;
+import com.sg.relief.domain.service.query.vo.GuardianListVO;
 import com.sg.relief.domain.service.query.vo.SampleVO;
 import com.sg.relief.domain.service.query.vo.UserIdCheckVO;
+import com.sg.relief.interfaces.api.query.dto.GuardianListQueryDTO;
 import com.sg.relief.interfaces.api.query.dto.SampleQueryDTO;
 import com.sg.relief.interfaces.api.query.dto.UserCheckIdQueryDTO;
 import lombok.RequiredArgsConstructor;
@@ -18,15 +20,22 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/query/member")
+@RequestMapping("/api/query")
 public class UserQueryController {
 
     @Autowired
     private UserQueryService userQueryService;
 
-    @PostMapping("/checkid")
+    @PostMapping("/member/checkid")
     public UserIdCheckVO sampleQuery(@RequestBody UserCheckIdQueryDTO userCheckIdQueryDTO) {
         UserIdCheckVO userIdCheckVO = userQueryService.findId(userCheckIdQueryDTO.getId());
         return userIdCheckVO;
+    }
+
+
+    @PostMapping("/guardian/list")
+    public GuardianListVO sampleQuery(@RequestBody GuardianListQueryDTO guardianListQueryDTO) {
+        GuardianListVO guardianListVO = userQueryService.getGuardianList(guardianListQueryDTO.getUserId());
+        return guardianListVO;
     }
 }
