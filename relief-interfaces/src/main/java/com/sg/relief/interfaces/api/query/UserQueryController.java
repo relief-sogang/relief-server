@@ -11,10 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @Slf4j
@@ -27,13 +24,13 @@ public class UserQueryController {
     private UserQueryService userQueryService;
 
     @PostMapping("/member/checkid")
-    public UserIdCheckVO sampleQuery(@RequestBody UserCheckIdQueryDTO userCheckIdQueryDTO) {
+    public UserIdCheckVO checkId(@RequestBody UserCheckIdQueryDTO userCheckIdQueryDTO) {
         UserIdCheckVO userIdCheckVO = userQueryService.findId(userCheckIdQueryDTO.getId());
         return userIdCheckVO;
     }
 
 
-    @PostMapping("/guardian/list")
+    @GetMapping("/guardian/list")
     public GuardianListVO sampleQuery(@RequestBody GuardianListQueryDTO guardianListQueryDTO) {
         GuardianListVO guardianListVO = userQueryService.getGuardianList(guardianListQueryDTO.getUserId());
         return guardianListVO;
