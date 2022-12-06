@@ -19,10 +19,7 @@ public class OAuthController {
 
     @GetMapping("/oauth2/code/{provider}")
     public ResponseEntity<LoginResponse> login(@PathVariable String provider, @RequestParam String code){
-
-        log.info("=====login===== : {}", provider);
         LoginResponse loginResponse = oAuth2Service.login(provider, code);
-
         return ResponseEntity.ok().body(loginResponse);
     }
 }
