@@ -31,7 +31,6 @@ public class UserQueryController {
         return userIdCheckVO;
     }
 
-
     @GetMapping("/guardian/list")
     public GuardianListVO guardianList(@RequestBody GuardianListQueryDTO guardianListQueryDTO) {
         GuardianListVO guardianListVO = userQueryService.getGuardianList(guardianListQueryDTO.getUserId());

@@ -8,7 +8,8 @@ import lombok.RequiredArgsConstructor;
 public enum UserMappingStatus {
     REQUEST("신청"),
     ON( "ON"),
-    OFF( "OFF");
+    OFF( "OFF"),
+    REJECT("거절");
 
     private final String description;
 }
