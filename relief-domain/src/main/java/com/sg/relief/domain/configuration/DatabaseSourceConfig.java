@@ -12,7 +12,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.Database;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
@@ -57,5 +60,25 @@ public class DatabaseSourceConfig {
         props.put("hibernate.implicit_naming_strategy", SpringImplicitNamingStrategy.class.getName());
         props.put("hibernate.physical_naming_strategy", SpringPhysicalNamingStrategy.class.getName());
         return props;
+    }
+
+    // cctv upload 시 사용
+    @Bean
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory2(
+            DataSource dataSource, JpaVendorAdapter jpaVendorAdapter) {
+        LocalContainerEntityManagerFactoryBean lef = new LocalContainerEntityManagerFactoryBean();
+        lef.setDataSource(dataSource);
+        lef.setJpaVendorAdapter(jpaVendorAdapter);
+        lef.setPackagesToScan("com.sg.relief.domain");
+        return lef;
+    }
+
+    @Bean
+    public JpaVendorAdapter jpaVendorAdapter() {
+        HibernateJpaVendorAdapter hibernateJpaVendorAdapter = new HibernateJpaVendorAdapter();
+        hibernateJpaVendorAdapter.setShowSql(true);
+        hibernateJpaVendorAdapter.setGenerateDdl(true); //Auto creating scheme when true
+        hibernateJpaVendorAdapter.setDatabase(Database.MYSQL);//Database type
+        return hibernateJpaVendorAdapter;
     }
 }

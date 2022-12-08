@@ -50,6 +50,8 @@ subprojects {
         implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
         implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+        implementation 'org.apache.poi:poi-ooxml:5.2.2'
     }
 }
 
