@@ -7,10 +7,8 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SignupDetailCommandDTO {
-    private String email;
+public class GuardianRenameCommandDTO {
     private String userId;
-    private String userName;
-    private String password;
-    private String phoneNumber;
+    private String guardianId;
+    private String rename;
 }

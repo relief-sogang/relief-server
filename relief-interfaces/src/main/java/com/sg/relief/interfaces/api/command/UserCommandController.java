@@ -1,12 +1,10 @@
 package com.sg.relief.interfaces.api.command;
 
 import com.sg.relief.domain.service.command.UserCommandService;
-import com.sg.relief.domain.service.command.co.GuardianRequestCommand;
-import com.sg.relief.domain.service.command.co.UserDetailCommand;
+import com.sg.relief.domain.service.command.co.*;
 import com.sg.relief.domain.service.command.vo.GuardianRequestVO;
 import com.sg.relief.domain.service.command.vo.UserDetailVO;
-import com.sg.relief.interfaces.api.command.dto.GuardianRequestCommandDTO;
-import com.sg.relief.interfaces.api.command.dto.SignupDetailCommandDTO;
+import com.sg.relief.interfaces.api.command.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +44,37 @@ public class UserCommandController {
                         .guardianId(guardianRequestCommandDTO.getGuardianId())
                         .guardianName(guardianRequestCommandDTO.getGuardianName())
                         .message(guardianRequestCommandDTO.getMessage())
+                .build());
+        return guardianRequestVO;
+    }
+
+    @PostMapping("/guardian/rename")
+    public GuardianRequestVO guardianRename(@RequestBody GuardianRenameCommandDTO guardianRenameCommandDTO){
+        GuardianRequestVO guardianRequestVO = userCommandService.guardianRename(GuardianRenameCommand.builder()
+                        .userId(guardianRenameCommandDTO.getUserId())
+                        .guardianId(guardianRenameCommandDTO.getGuardianId())
+                        .name(guardianRenameCommandDTO.getRename())
+                .build());
+        return guardianRequestVO;
+    }
+
+    @PostMapping("/guardian/changestatus")
+    public GuardianRequestVO guardianChangeStatus(@RequestBody GuardianChangeStatusCommandDTO guardianChangeStatusCommandDTO){
+        GuardianRequestVO guardianRequestVO = userCommandService.guardianChangeStatus(GuardianChangeStatusCommand.builder()
+                .userId(guardianChangeStatusCommandDTO.getUserId())
+                .guardianId(guardianChangeStatusCommandDTO.getGuardianId())
+                .isActive(guardianChangeStatusCommandDTO.getIsActive())
+                .build());
+        return guardianRequestVO;
+    }
+
+    @PostMapping("/guardian/accept")
+    public GuardianRequestVO guardianAccept(@RequestBody GuardianAcceptCommandDTO guardianAcceptCommandDTO){
+        GuardianRequestVO guardianRequestVO = userCommandService.guardianAccept(GuardianAcceptCommand.builder()
+                        .userId(guardianAcceptCommandDTO.getUserId())
+                        .protegeId(guardianAcceptCommandDTO.getProtegeId())
+                        .protegeName(guardianAcceptCommandDTO.getProtegeName())
+                        .isAccept(guardianAcceptCommandDTO.getIsAccept())
                 .build());
         return guardianRequestVO;
     }

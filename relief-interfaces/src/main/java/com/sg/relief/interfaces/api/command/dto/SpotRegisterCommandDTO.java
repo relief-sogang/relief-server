@@ -7,10 +7,9 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SignupDetailCommandDTO {
-    private String email;
+public class SpotRegisterCommandDTO {
     private String userId;
-    private String userName;
-    private String password;
-    private String phoneNumber;
+    private String name;
+    private String lat;
+    private String lng;
 }
