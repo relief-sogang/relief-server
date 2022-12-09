@@ -7,8 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Setter
 @Builder
-//@AllArgsConstructor
-//@NoArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 public class SampleCommandDTO {
     private String test;
 }

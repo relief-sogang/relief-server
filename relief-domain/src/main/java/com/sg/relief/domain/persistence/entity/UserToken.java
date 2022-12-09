@@ -23,6 +23,9 @@ public class UserToken {
     @Column
     private Long userId;
 
+//    @Column
+//    private String accessToken;
+
     @Column
     private String refreshToken;
 }

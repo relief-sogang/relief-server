@@ -1,13 +1,13 @@
 package com.sg.relief.interfaces.api.query.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class GuardianListQueryDTO {
     private String userId;
 }
