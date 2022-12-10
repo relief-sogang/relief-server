@@ -5,12 +5,15 @@ import com.sg.relief.domain.persistence.repository.CctvRepository;
 import com.sg.relief.domain.service.query.vo.CctvInfoVO;
 import com.sg.relief.domain.service.query.vo.CctvListVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+@Service
 public class CctvQueryService {
+
     @Autowired
     private CctvRepository cctvRepository;
     /* Find CCTVs in 500m */

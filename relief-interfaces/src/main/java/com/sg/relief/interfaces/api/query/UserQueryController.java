@@ -28,13 +28,13 @@ public class UserQueryController {
         return userIdCheckVO;
     }
 
-    @GetMapping("/guardian/list")
+    @PostMapping("/guardian/list")
     public GuardianListVO guardianList(@RequestBody UserQueryDTO userQueryDTO) {
         GuardianListVO guardianListVO = userQueryService.getGuardianList(userQueryDTO.getUserId());
         return guardianListVO;
     }
 
-    @GetMapping("/guardian/detail")
+    @PostMapping("/guardian/detail")
     public GuardianInfoVO guardianDetail(@RequestBody GuardianDetailQueryDTO guardianDetailQueryDTO) {
         GuardianInfoVO guardianInfoVO = userQueryService.getGuardianDetail(guardianDetailQueryDTO.getGuardianId());
         return guardianInfoVO;
