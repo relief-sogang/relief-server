@@ -7,6 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class GuardianRequestVO {
+public class ResponseCodeVO {
     private String code;
 }

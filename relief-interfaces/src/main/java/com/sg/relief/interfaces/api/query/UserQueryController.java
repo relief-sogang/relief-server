@@ -3,10 +3,9 @@ package com.sg.relief.interfaces.api.query;
 import com.sg.relief.domain.service.query.UserQueryService;
 import com.sg.relief.domain.service.query.vo.GuardianInfoVO;
 import com.sg.relief.domain.service.query.vo.GuardianListVO;
+import com.sg.relief.domain.service.query.vo.ProtegeListVO;
 import com.sg.relief.domain.service.query.vo.UserIdCheckVO;
-import com.sg.relief.interfaces.api.query.dto.GuardianDetailQueryDTO;
-import com.sg.relief.interfaces.api.query.dto.GuardianListQueryDTO;
-import com.sg.relief.interfaces.api.query.dto.UserQueryDTO;
+import com.sg.relief.interfaces.api.query.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,4 +38,12 @@ public class UserQueryController {
         GuardianInfoVO guardianInfoVO = userQueryService.getGuardianDetail(guardianDetailQueryDTO.getGuardianId());
         return guardianInfoVO;
     }
+
+    @PostMapping("/protege/list")
+    public ProtegeListVO protegeList(@RequestBody ProtegeListQueryDTO protegeListQueryDTO){
+        ProtegeListVO protegeListVO = userQueryService.getProtegeList(protegeListQueryDTO.getUserId(),
+                protegeListQueryDTO.getStatus());
+        return protegeListVO;
+    }
+
 }

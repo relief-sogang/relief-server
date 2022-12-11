@@ -4,9 +4,7 @@ import com.sg.relief.domain.persistence.entity.User;
 import com.sg.relief.domain.persistence.entity.UserMapping;
 import com.sg.relief.domain.persistence.repository.UserMappingRepository;
 import com.sg.relief.domain.persistence.repository.UserRepository;
-import com.sg.relief.domain.service.query.vo.GuardianInfoVO;
-import com.sg.relief.domain.service.query.vo.GuardianListVO;
-import com.sg.relief.domain.service.query.vo.UserIdCheckVO;
+import com.sg.relief.domain.service.query.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,6 +58,26 @@ public class UserQueryServiceImpl implements UserQueryService {
                 .id(user.getUserId())
                 .email(user.getEmail())
                 .status(user.getStatus().toString())
+                .build();
+    }
+
+    @Override
+    public ProtegeListVO getProtegeList(String userId, String status) {
+        List<UserMapping> userMappings = userMappingRepository.findALlByGuardianId(userId);
+        List<ProtegeInfoVO> protegeInfoVOS = userMappings.stream().map(x -> ProtegeInfoVO.builder()
+                .id(x.getProtegeId())
+                .name(x.getProtegeName())
+                .status(x.getStatus().toString())
+                .build()).collect(Collectors.toList());
+
+        if(status.equals("REQUEST")){
+            protegeInfoVOS.stream().filter(x->x.getStatus().equals("REQUEST")).collect(Collectors.toList());
+        } else if (status.equals("SHARING")){
+            protegeInfoVOS.stream().filter(x->x.getStatus().equals("SHARING")).collect(Collectors.toList());
+        }
+
+        return ProtegeListVO.builder()
+                .protegeList(protegeInfoVOS)
                 .build();
     }
 }
