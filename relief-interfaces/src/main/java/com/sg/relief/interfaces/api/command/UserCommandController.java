@@ -1,8 +1,10 @@
 package com.sg.relief.interfaces.api.command;
 
 import com.sg.relief.domain.service.command.UserCommandService;
+import com.sg.relief.domain.service.command.vo.FCMTokenVO;
 import com.sg.relief.domain.service.command.co.*;
 import com.sg.relief.domain.service.command.vo.GuardianRequestVO;
+import com.sg.relief.domain.service.command.vo.HelpMessageVO;
 import com.sg.relief.domain.service.command.vo.UserDetailVO;
 import com.sg.relief.interfaces.api.command.dto.*;
 import lombok.RequiredArgsConstructor;
@@ -45,9 +47,26 @@ public class UserCommandController {
                         .guardianName(guardianRequestCommandDTO.getGuardianName())
                         .message(guardianRequestCommandDTO.getMessage())
                 .build());
+        // PushNotification
+        if (guardianRequestVO.getCode().equals("SUCCESS")) {
+
+        }
         return guardianRequestVO;
     }
-
+    @PostMapping("/message")
+    public HelpMessageVO registerHelpMessage(@RequestBody RegisterHelpMessageCommandDTO registerHelpMessageCommandDTO) {
+        HelpMessageRegisterCommand  helpMessageRegisterCommand = HelpMessageRegisterCommand.builder()
+                .userId(registerHelpMessageCommandDTO.getUserId())
+                .message(registerHelpMessageCommandDTO.getMessage())
+                .build();
+        HelpMessageVO helpMessageVO = userCommandService.registerHelpMessage(helpMessageRegisterCommand);
+        return helpMessageVO;
+    }
+    @PostMapping("/member/fcmtoken/register")
+    public FCMTokenVO receiveFCMToken (@RequestBody FCMTokenCommand fcmTokenCommand) {
+        FCMTokenVO fcmTokenVO = userCommandService.receiveFCMToken(fcmTokenCommand);
+        return fcmTokenVO;
+    }
     @PostMapping("/guardian/rename")
     public GuardianRequestVO guardianRename(@RequestBody GuardianRenameCommandDTO guardianRenameCommandDTO){
         GuardianRequestVO guardianRequestVO = userCommandService.guardianRename(GuardianRenameCommand.builder()
