@@ -49,8 +49,8 @@ public class UserCommandController {
                 .build());
 
         // PushNotification
-        if (guardianRequestVO.getCode().equals("SUCCESS")) {
-
+        if (responseCodeVO.getCode().equals("SUCCESS")) {
+            userCommandService.guardianRequestPush(guardianRequestCommandDTO.getUserId(), guardianRequestCommandDTO.getMessage());
         }
         return responseCodeVO;
     }

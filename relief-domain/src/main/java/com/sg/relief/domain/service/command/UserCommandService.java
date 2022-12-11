@@ -22,4 +22,5 @@ public interface UserCommandService {
     HelpMessageVO registerHelpMessage(HelpMessageRegisterCommand helpMessageRegisterCommand);
     FCMTokenVO receiveFCMToken (FCMTokenCommand fcmTokenCommand);
 
+    void guardianRequestPush (String userId, String message);
 }
