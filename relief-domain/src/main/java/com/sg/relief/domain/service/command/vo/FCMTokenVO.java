@@ -8,5 +8,5 @@ import lombok.Setter;
 @Setter
 @Builder
 public class FCMTokenVO {
-    String code;
+    private String code;
 }

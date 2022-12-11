@@ -8,6 +8,6 @@ import lombok.Setter;
 @Setter
 @Builder
 public class FCMTokenCommand {
-    String userId;
-    String token;
+    private String userId;
+    private String token;
 }
