@@ -1,9 +1,11 @@
 package com.sg.relief.interfaces.api.command;
 
 import com.sg.relief.domain.service.command.UserCommandService;
+import com.sg.relief.domain.service.command.co.FCMTokenCommand;
 import com.sg.relief.domain.service.command.co.GuardianRequestCommand;
 import com.sg.relief.domain.service.command.co.HelpMessageRegisterCommand;
 import com.sg.relief.domain.service.command.co.UserDetailCommand;
+import com.sg.relief.domain.service.command.vo.FCMTokenVO;
 import com.sg.relief.domain.service.command.vo.GuardianRequestVO;
 import com.sg.relief.domain.service.command.vo.HelpMessageVO;
 import com.sg.relief.domain.service.command.vo.UserDetailVO;
@@ -64,5 +66,10 @@ public class UserCommandController {
                 .build();
         HelpMessageVO helpMessageVO = userCommandService.registerHelpMessage(helpMessageRegisterCommand);
         return helpMessageVO;
+    }
+    @PostMapping("/member/fcmtoken/register")
+    public FCMTokenVO receiveFCMToken (@RequestBody FCMTokenCommand fcmTokenCommand) {
+        FCMTokenVO fcmTokenVO = userCommandService.receiveFCMToken(fcmTokenCommand);
+        return fcmTokenVO;
     }
 }

@@ -11,9 +11,11 @@ import com.sg.relief.domain.persistence.repository.UserRepository;
 import com.sg.relief.domain.persistence.repository.UserTokenRepository;
 import com.sg.relief.domain.service.FCMService;
 import com.sg.relief.domain.service.PushNotificationService;
+import com.sg.relief.domain.service.command.co.FCMTokenCommand;
 import com.sg.relief.domain.service.command.co.GuardianRequestCommand;
 import com.sg.relief.domain.service.command.co.HelpMessageRegisterCommand;
 import com.sg.relief.domain.service.command.co.UserDetailCommand;
+import com.sg.relief.domain.service.command.vo.FCMTokenVO;
 import com.sg.relief.domain.service.command.vo.GuardianRequestVO;
 import com.sg.relief.domain.service.command.vo.HelpMessageVO;
 import com.sg.relief.domain.service.command.vo.UserDetailVO;
@@ -34,6 +36,8 @@ public class UserCommandServiceImpl implements UserCommandService {
     @Autowired
     private UserMappingRepository userMappingRepository;
 
+    @Autowired
+    private UserTokenRepository userTokenRepository;
     @Autowired
     private PushNotificationService pushNotificationService;
 
@@ -90,5 +94,22 @@ public class UserCommandServiceImpl implements UserCommandService {
             helpMessageVO.setCode("SUCCESS");
         });
         return helpMessageVO;
+    }
+
+    /* recieve Token and save it. */
+    @Override
+    public FCMTokenVO receiveFCMToken (FCMTokenCommand fcmTokenCommand){
+        Optional<User> user = userRepository.findByUserId(fcmTokenCommand.getUserId());
+        FCMTokenVO fcmTokenVO = FCMTokenVO.builder().code("FAIL").build();
+        if (user.isPresent()) {
+            Optional<UserToken> userToken = userTokenRepository.findByUserId(user.get().getId());
+            if (userToken.isPresent()) {
+                UserToken updateUserToken = userToken.get();
+                updateUserToken.setFcmToken(fcmTokenCommand.getToken());
+                userTokenRepository.save(updateUserToken);
+                fcmTokenVO.setCode("SUCCESS");
+            }
+        }
+        return fcmTokenVO;
     }
 }
