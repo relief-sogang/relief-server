@@ -1,12 +1,8 @@
 package com.sg.relief.interfaces.api.command;
 
 import com.sg.relief.domain.service.command.ShareCommandService;
-import com.sg.relief.domain.service.command.co.HelpRequestCommand;
-import com.sg.relief.domain.service.command.co.ShareEndCommand;
-import com.sg.relief.domain.service.command.co.ShareStartCommand;
-import com.sg.relief.domain.service.command.vo.HelpRequestVO;
-import com.sg.relief.domain.service.command.vo.ShareEndVO;
-import com.sg.relief.domain.service.command.vo.ShareStartVO;
+import com.sg.relief.domain.service.command.co.*;
+import com.sg.relief.domain.service.command.vo.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,4 +38,13 @@ public class ShareCommandController {
         return helpRequestVO;
     }
 
+    @PostMapping("/share")
+    public SaveShareLocationVO saveShareLocation(@RequestBody SaveLocationCommand saveLocationCommand) {
+        return shareCommandService.saveShareLocation(saveLocationCommand);
+    }
+
+    @PostMapping("/share/get")
+    public ShareLocationVO getShareLocation(@RequestBody GetShareLocationCommand getShareLocationCommand) {
+        return shareCommandService.getShareLocation(getShareLocationCommand);
+    }
 }

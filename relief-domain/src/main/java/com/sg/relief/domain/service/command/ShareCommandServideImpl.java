@@ -1,17 +1,13 @@
 package com.sg.relief.domain.service.command;
 
+import com.sg.relief.domain.code.UserStatus;
 import com.sg.relief.domain.persistence.entity.ShareCode;
 import com.sg.relief.domain.persistence.entity.User;
 import com.sg.relief.domain.persistence.repository.ShareCodeRepository;
 import com.sg.relief.domain.persistence.repository.UserRepository;
 import com.sg.relief.domain.service.PushNotificationService;
-import com.sg.relief.domain.service.command.co.HelpRequestCommand;
-import com.sg.relief.domain.service.command.co.SaveLocationCommand;
-import com.sg.relief.domain.service.command.co.ShareEndCommand;
-import com.sg.relief.domain.service.command.co.ShareStartCommand;
-import com.sg.relief.domain.service.command.vo.HelpRequestVO;
-import com.sg.relief.domain.service.command.vo.ShareEndVO;
-import com.sg.relief.domain.service.command.vo.ShareStartVO;
+import com.sg.relief.domain.service.command.co.*;
+import com.sg.relief.domain.service.command.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,35 +34,43 @@ public class ShareCommandServideImpl implements ShareCommandService{
         ShareCode shareCode = ShareCode.builder()
                         .userId(shareStartCommand.getUserId())
                         .code(code)
-                        .lat(0l)
-                        .lng(0l)
+                        .lat(0.0)
+                        .lng(0.0)
                         .build();
         shareCodeRepository.save(shareCode);
         Optional<User> user = userRepository.findByUserId(shareStartCommand.getUserId());
         if (user.isPresent()) {
             User updateUser = user.get();
-            // updateUser.setStatus();
+            updateUser.setStatus(UserStatus.SHARING);
+            userRepository.save(updateUser);
         }
 
         pushNotificationService.sendShareStartPush(shareStartCommand.getUserId());
         ShareStartVO shareStartVO = ShareStartVO.builder().code(code).build();
         return shareStartVO;
     }
-    /* Save user location 수정 예정 */
-    public String saveLocation(SaveLocationCommand saveLocationCommand) {
-       shareCodeRepository.findByCode(saveLocationCommand.getCode()).ifPresent(shareCode -> {
 
-       });
+    @Override
+    public SaveShareLocationVO saveShareLocation(SaveLocationCommand saveLocationCommand) {
+        Optional<ShareCode> shareCode = shareCodeRepository.findByCode(saveLocationCommand.getCode());
+        SaveShareLocationVO saveShareLocationVO = SaveShareLocationVO.builder().code("FAIL").build();
+        if (shareCode.isPresent()) {
+            ShareCode shareCodeUpdate = shareCode.get();
+            shareCodeUpdate.setLat(Double.parseDouble(saveLocationCommand.getLat()));
+            shareCodeUpdate.setLng(Double.parseDouble(saveLocationCommand.getLng()));
+            shareCodeRepository.save(shareCodeUpdate);
+            saveShareLocationVO.setCode("SUCCESS");
+        }
+        return saveShareLocationVO;
 
-       return null;
     }
 
     /* 추후 수정 */
     @Override
     public String generateCode() {
-        String code = Double.toString( (int)(Math.random() * 1000000) );
+        String code = Integer.toString( (int)(Math.random() * 1000000) );
         while (shareCodeRepository.findByCode(code).isPresent() == true) {
-            code = Double.toString( (int)(Math.random() * 1000000) );
+            code = Integer.toString( (int)(Math.random() * 1000000) );
         }
         return code;
     }
@@ -89,5 +93,16 @@ public class ShareCommandServideImpl implements ShareCommandService{
         HelpRequestVO helpRequestVO = HelpRequestVO.builder().code("SUCCESS").build();
         pushNotificationService.sendHelpPush(helpRequestCommand.getUserId());
         return helpRequestVO;
+    }
+    @Override
+    public ShareLocationVO getShareLocation(GetShareLocationCommand getShareLocationCommand) {
+        Optional<ShareCode> shareCode = shareCodeRepository.findByCode(getShareLocationCommand.getCode());
+        ShareLocationVO shareLocationVO = ShareLocationVO.builder().build();
+        if (shareCode.isPresent()) {
+            ShareCode share = shareCode.get();
+            shareLocationVO.setLat(Double.toString(share.getLat()));
+            shareLocationVO.setLng(Double.toString(share.getLng()));
+        }
+        return shareLocationVO;
     }
 }
