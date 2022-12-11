@@ -40,6 +40,9 @@ public class User {
     private UserStatus status;
 
     @Column
+    private Boolean activeAlarm;
+
+    @Column
     private Date createdAt;
 
     @Column
@@ -55,13 +58,9 @@ public class User {
         this.modifiedAt = modifiedAt;
     }
 
+
     @Column
     @Nullable
     private String helpMessage;
-
-//    public String getRoleKey(){
-//        return this.role.getKey();
-//    }
-
 
 }

@@ -3,7 +3,7 @@ package com.sg.relief.interfaces.api.command;
 import com.sg.relief.domain.service.command.UserCommandService;
 import com.sg.relief.domain.service.command.vo.FCMTokenVO;
 import com.sg.relief.domain.service.command.co.*;
-import com.sg.relief.domain.service.command.vo.GuardianRequestVO;
+import com.sg.relief.domain.service.command.vo.ResponseCodeVO;
 import com.sg.relief.domain.service.command.vo.HelpMessageVO;
 import com.sg.relief.domain.service.command.vo.UserDetailVO;
 import com.sg.relief.interfaces.api.command.dto.*;
@@ -40,18 +40,19 @@ public class UserCommandController {
     }
 
     @PostMapping("/guardian/request")
-    public GuardianRequestVO guardianRequest(@RequestBody GuardianRequestCommandDTO guardianRequestCommandDTO) {
-        GuardianRequestVO guardianRequestVO = userCommandService.guardianRequest(GuardianRequestCommand.builder()
+    public ResponseCodeVO guardianRequest(@RequestBody GuardianRequestCommandDTO guardianRequestCommandDTO) {
+        ResponseCodeVO responseCodeVO = userCommandService.guardianRequest(GuardianRequestCommand.builder()
                         .protegeId(guardianRequestCommandDTO.getUserId())
                         .guardianId(guardianRequestCommandDTO.getGuardianId())
                         .guardianName(guardianRequestCommandDTO.getGuardianName())
                         .message(guardianRequestCommandDTO.getMessage())
                 .build());
+
         // PushNotification
         if (guardianRequestVO.getCode().equals("SUCCESS")) {
 
         }
-        return guardianRequestVO;
+        return responseCodeVO;
     }
     @PostMapping("/message")
     public HelpMessageVO registerHelpMessage(@RequestBody RegisterHelpMessageCommandDTO registerHelpMessageCommandDTO) {
@@ -68,33 +69,64 @@ public class UserCommandController {
         return fcmTokenVO;
     }
     @PostMapping("/guardian/rename")
-    public GuardianRequestVO guardianRename(@RequestBody GuardianRenameCommandDTO guardianRenameCommandDTO){
-        GuardianRequestVO guardianRequestVO = userCommandService.guardianRename(GuardianRenameCommand.builder()
+    public ResponseCodeVO guardianRename(@RequestBody GuardianRenameCommandDTO guardianRenameCommandDTO){
+        ResponseCodeVO responseCodeVO = userCommandService.guardianRename(GuardianRenameCommand.builder()
                         .userId(guardianRenameCommandDTO.getUserId())
                         .guardianId(guardianRenameCommandDTO.getGuardianId())
                         .name(guardianRenameCommandDTO.getRename())
                 .build());
-        return guardianRequestVO;
+        return responseCodeVO;
     }
 
     @PostMapping("/guardian/changestatus")
-    public GuardianRequestVO guardianChangeStatus(@RequestBody GuardianChangeStatusCommandDTO guardianChangeStatusCommandDTO){
-        GuardianRequestVO guardianRequestVO = userCommandService.guardianChangeStatus(GuardianChangeStatusCommand.builder()
+    public ResponseCodeVO guardianChangeStatus(@RequestBody GuardianChangeStatusCommandDTO guardianChangeStatusCommandDTO){
+        ResponseCodeVO responseCodeVO = userCommandService.guardianChangeStatus(GuardianChangeStatusCommand.builder()
                 .userId(guardianChangeStatusCommandDTO.getUserId())
                 .guardianId(guardianChangeStatusCommandDTO.getGuardianId())
                 .isActive(guardianChangeStatusCommandDTO.getIsActive())
                 .build());
-        return guardianRequestVO;
+        return responseCodeVO;
     }
 
     @PostMapping("/guardian/accept")
-    public GuardianRequestVO guardianAccept(@RequestBody GuardianAcceptCommandDTO guardianAcceptCommandDTO){
-        GuardianRequestVO guardianRequestVO = userCommandService.guardianAccept(GuardianAcceptCommand.builder()
+    public ResponseCodeVO guardianAccept(@RequestBody GuardianAcceptCommandDTO guardianAcceptCommandDTO){
+        ResponseCodeVO responseCodeVO = userCommandService.guardianAccept(GuardianAcceptCommand.builder()
                         .userId(guardianAcceptCommandDTO.getUserId())
                         .protegeId(guardianAcceptCommandDTO.getProtegeId())
                         .protegeName(guardianAcceptCommandDTO.getProtegeName())
                         .isAccept(guardianAcceptCommandDTO.getIsAccept())
                 .build());
-        return guardianRequestVO;
+        return responseCodeVO;
+    }
+
+    @PostMapping("/protege/rename")
+    public ResponseCodeVO renameProtege(@RequestBody ProtegeRenameCommandDTO protegeRenameCommandDTO){
+        ResponseCodeVO responseCodeVO = userCommandService.renameProtege(protegeRenameCommandDTO.getUserId(),
+                protegeRenameCommandDTO.getProtegeId(),
+                protegeRenameCommandDTO.getRename());
+        return responseCodeVO;
+    }
+
+    @PostMapping("/mapping/delete")
+    public ResponseCodeVO mappingDelete(@RequestBody UserMappingDeleteDTO userMappingDeleteDTO){
+        ResponseCodeVO responseCodeVO = userCommandService.mappingDelete(userMappingDeleteDTO.getUserId(),
+                userMappingDeleteDTO.getDeleteId(),
+                userMappingDeleteDTO.getType());
+        return responseCodeVO;
+    }
+
+    @PostMapping("/member/updateinfo")
+    public ResponseCodeVO memberUpdateInfo(@RequestBody UserInfoUpdateCommandDTO userInfoUpdateCommandDTO){
+        ResponseCodeVO responseCodeVO = userCommandService.memberUpdateInfo(userInfoUpdateCommandDTO.getUserId(),
+                userInfoUpdateCommandDTO.getName(),
+                userInfoUpdateCommandDTO.getPhoneNumber());
+        return responseCodeVO;
+    }
+
+    @PostMapping("/pushalarm/status")
+    public ResponseCodeVO pushAlarmStatus(@RequestBody UserPushAlarmCommandDTO userPushAlarmCommandDTO){
+        ResponseCodeVO responseCodeVO = userCommandService.pushAlarmStatus(userPushAlarmCommandDTO.getUserId(),
+                userPushAlarmCommandDTO.getStatus());
+        return responseCodeVO;
     }
 }

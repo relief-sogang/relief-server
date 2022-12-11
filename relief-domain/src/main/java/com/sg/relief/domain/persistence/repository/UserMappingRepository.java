@@ -13,4 +13,5 @@ public interface UserMappingRepository extends JpaRepository<UserMapping, Long> 
     Optional<UserMapping> findByProtegeIdAndGuardianName(String protegeId, String guardianName);
     Optional<UserMapping> findByProtegeIdAndGuardianId(String protegeId, String guardianId);
     List<UserMapping> findAllByProtegeId(String protegeId);
+    List<UserMapping> findALlByGuardianId(String guardianId);
 }
