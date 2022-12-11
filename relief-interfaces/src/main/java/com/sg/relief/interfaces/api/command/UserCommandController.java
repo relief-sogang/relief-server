@@ -49,7 +49,7 @@ public class UserCommandController {
                 .build());
 
         // PushNotification
-        if (guardianRequestVO.getCode().equals("SUCCESS")) {
+        if (responseCodeVO.getCode().equals("SUCCESS")) {
 
         }
         return responseCodeVO;
