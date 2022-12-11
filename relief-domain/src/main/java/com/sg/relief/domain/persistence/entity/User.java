@@ -4,6 +4,7 @@ import com.sg.relief.domain.code.Role;
 import com.sg.relief.domain.code.UserStatus;
 import lombok.*;
 
+import javax.annotation.Nullable;
 import javax.persistence.*;
 import java.util.Date;
 
@@ -56,5 +57,10 @@ public class User {
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
     }
+
+
+    @Column
+    @Nullable
+    private String helpMessage;
 
 }

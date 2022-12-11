@@ -2,12 +2,19 @@ package com.sg.relief.domain.service.command;
 
 import com.sg.relief.domain.code.UserMappingStatus;
 import com.sg.relief.domain.code.UserStatus;
+import com.sg.relief.domain.model.PushNotificationRequest;
 import com.sg.relief.domain.persistence.entity.User;
 import com.sg.relief.domain.persistence.entity.UserMapping;
+import com.sg.relief.domain.persistence.entity.UserToken;
 import com.sg.relief.domain.persistence.repository.UserMappingRepository;
 import com.sg.relief.domain.persistence.repository.UserRepository;
+import com.sg.relief.domain.persistence.repository.UserTokenRepository;
+import com.sg.relief.domain.service.FCMService;
+import com.sg.relief.domain.service.PushNotificationService;
+import com.sg.relief.domain.service.command.vo.FCMTokenVO;
 import com.sg.relief.domain.service.command.co.*;
 import com.sg.relief.domain.service.command.vo.ResponseCodeVO;
+import com.sg.relief.domain.service.command.vo.HelpMessageVO;
 import com.sg.relief.domain.service.command.vo.UserDetailVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +33,11 @@ public class UserCommandServiceImpl implements UserCommandService {
 
     @Autowired
     private UserMappingRepository userMappingRepository;
+
+    @Autowired
+    private UserTokenRepository userTokenRepository;
+    @Autowired
+    private PushNotificationService pushNotificationService;
 
     @Override
     public UserDetailVO register(UserDetailCommand userDetailCommand){
@@ -64,6 +76,8 @@ public class UserCommandServiceImpl implements UserCommandService {
                     .build();
             userMappingRepository.save(userMapping);
             responseCodeVO.setCode("SUCCESS");
+            pushNotificationService.sendGuardianRequestPush(user.get().getId(), guardianRequestCommand.getMessage());
+
         }
 
         return responseCodeVO;
@@ -71,6 +85,33 @@ public class UserCommandServiceImpl implements UserCommandService {
     }
 
     @Override
+    public HelpMessageVO registerHelpMessage(HelpMessageRegisterCommand helpMessageRegisterCommand) {
+        HelpMessageVO helpMessageVO = HelpMessageVO.builder().build();
+        helpMessageVO.setCode("FAIL");
+        userRepository.findByUserId(helpMessageRegisterCommand.getUserId()).ifPresent(user -> {
+            user.setHelpMessage(helpMessageRegisterCommand.getMessage());
+            helpMessageVO.setCode("SUCCESS");
+        });
+        return helpMessageVO;
+    }
+
+    /* recieve Token and save it. */
+    @Override
+    public FCMTokenVO receiveFCMToken (FCMTokenCommand fcmTokenCommand){
+        Optional<User> user = userRepository.findByUserId(fcmTokenCommand.getUserId());
+        FCMTokenVO fcmTokenVO = FCMTokenVO.builder().code("FAIL").build();
+        if (user.isPresent()) {
+            Optional<UserToken> userToken = userTokenRepository.findByUserId(user.get().getId());
+            if (userToken.isPresent()) {
+                UserToken updateUserToken = userToken.get();
+                updateUserToken.setFcmToken(fcmTokenCommand.getToken());
+                userTokenRepository.save(updateUserToken);
+                fcmTokenVO.setCode("SUCCESS");
+            }
+        }
+        return fcmTokenVO;
+    }
+    
     public ResponseCodeVO guardianRename(GuardianRenameCommand guardianRenameCommand){
         UserMapping userMapping = userMappingRepository.findByProtegeIdAndGuardianId(guardianRenameCommand.getUserId(), guardianRenameCommand.getGuardianId()).get();
         ResponseCodeVO responseCodeVO = ResponseCodeVO.builder().build();

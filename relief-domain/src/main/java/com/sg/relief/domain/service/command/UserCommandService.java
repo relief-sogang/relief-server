@@ -1,7 +1,10 @@
 package com.sg.relief.domain.service.command;
 
+
+import com.sg.relief.domain.service.command.vo.FCMTokenVO;
 import com.sg.relief.domain.service.command.co.*;
 import com.sg.relief.domain.service.command.vo.ResponseCodeVO;
+import com.sg.relief.domain.service.command.vo.HelpMessageVO;
 import com.sg.relief.domain.service.command.vo.UserDetailVO;
 
 public interface UserCommandService {
@@ -15,4 +18,8 @@ public interface UserCommandService {
     ResponseCodeVO mappingDelete(String userId, String deleteId, String type);
     ResponseCodeVO memberUpdateInfo(String userId, String name, String phoneNumber);
     ResponseCodeVO pushAlarmStatus(String userId, String status);
+
+    HelpMessageVO registerHelpMessage(HelpMessageRegisterCommand helpMessageRegisterCommand);
+    FCMTokenVO receiveFCMToken (FCMTokenCommand fcmTokenCommand);
+
 }

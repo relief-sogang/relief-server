@@ -62,6 +62,7 @@ public class DatabaseSourceConfig {
         return props;
     }
 
+    /*
     // cctv upload 시 사용
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory2(
@@ -81,4 +82,5 @@ public class DatabaseSourceConfig {
         hibernateJpaVendorAdapter.setDatabase(Database.MYSQL);//Database type
         return hibernateJpaVendorAdapter;
     }
+    */
 }

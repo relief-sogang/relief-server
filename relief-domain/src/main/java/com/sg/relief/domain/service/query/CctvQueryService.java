@@ -4,6 +4,7 @@ import com.sg.relief.domain.persistence.entity.Cctv;
 import com.sg.relief.domain.persistence.repository.CctvRepository;
 import com.sg.relief.domain.service.query.vo.CctvInfoVO;
 import com.sg.relief.domain.service.query.vo.CctvListVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 
 @Service
+@Slf4j
 public class CctvQueryService {
 
     @Autowired

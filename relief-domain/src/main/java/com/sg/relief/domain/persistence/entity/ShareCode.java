@@ -1,5 +1,6 @@
 package com.sg.relief.domain.persistence.entity;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,23 +13,23 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name="user_token")
+@Table(name="share_code")
 @Entity
 @SuperBuilder
-public class UserToken {
+public class ShareCode {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
-    private Long userId;
-
-//    @Column
-//    private String accessToken;
+    private String userId;
 
     @Column
-    private String refreshToken;
+    private String code;
 
     @Column
-    private String fcmToken;
+    private Long lat;
+
+    @Column
+    private Long lng;
 }
