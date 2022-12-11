@@ -6,7 +6,9 @@ import com.sg.relief.domain.auth.user.OAuth2UserInfo;
 import com.sg.relief.domain.code.Role;
 import com.sg.relief.domain.code.UserStatus;
 import com.sg.relief.domain.persistence.entity.User;
+import com.sg.relief.domain.persistence.entity.UserToken;
 import com.sg.relief.domain.persistence.repository.UserRepository;
+import com.sg.relief.domain.persistence.repository.UserTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
@@ -34,6 +36,7 @@ public class OAuth2Service {
     private final ClientRegistrationRepository clientRegistrationRepository;
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserTokenRepository userTokenRepository;
 
 
     @Transactional
@@ -41,17 +44,64 @@ public class OAuth2Service {
         ClientRegistration provider = clientRegistrationRepository.findByRegistrationId(providerName);
         OAuth2TokenResponse tokenResponse = getToken(code, provider);
 
-        User user = getUserProfile(providerName, tokenResponse.getAccessToken(), provider);
+//        User user = getUserProfile(providerName, tokenResponse.getAccessToken(), provider);
+        Map<String, Object> userAttributes = getUserAttributes(provider, tokenResponse.getAccessToken());
+        OAuth2UserInfo oauth2UserInfo = null;
+        log.info("providerName: {}", providerName);
+        if(providerName.equals("kakao")){
+            oauth2UserInfo = new KakaoUserInfo(userAttributes);
+        } else if (providerName.equals("google")){
+            oauth2UserInfo = new GoogleUserInfo(userAttributes);
+        } else {
+            log.info("허용되지 않은 접근입니다.");
+        }
 
-        String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(user.getId()));
+        String name = oauth2UserInfo.getName();
+        String email = oauth2UserInfo.getEmail();
+
+        Optional<User> user = userRepository.findByEmail(email);
+
+        User createUser = null;
+        Boolean isNew = false;
+
+        if(user.isEmpty()){
+            createUser = userRepository.save(User.builder()
+                    .name(name)
+                    .email(email)
+                    .role(Role.USER)
+                    .status(UserStatus.CREATED)
+                    .createdAt(new Date())
+                    .modifiedAt(new Date())
+                    .build())
+                    ;
+            isNew = true;
+        } else {
+            createUser = user.get();
+            if(user.get().getStatus().equals(UserStatus.CREATED)){
+                isNew = true;
+            }
+        }
+
+        String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(createUser.getId()));
         String refreshToken = jwtTokenProvider.createRefreshToken();
 
+        UserToken userToken = null;
+        Optional<UserToken> optionalUserToken = userTokenRepository.findByUserId(createUser.getId());
+        if(optionalUserToken.isPresent()) {
+            userToken = optionalUserToken.get();
+            userToken.setRefreshToken(refreshToken);
+        }else {
+            userToken = UserToken.builder().userId(createUser.getId()).refreshToken(refreshToken).build();
+        }
+        userTokenRepository.save(userToken);
+
         return LoginResponse.builder()
-                .id(user.getId())
-                .name(user.getName())
-                .email(user.getEmail())
+                .id(createUser.getId())
+                .name(createUser.getName())
+                .email(createUser.getEmail())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .isNew(isNew)
                 .build();
 
     }
@@ -83,37 +133,37 @@ public class OAuth2Service {
         return formData;
     }
 
-    private User getUserProfile(String providerName, String oAuth2AccessToken, ClientRegistration provider){
-        Map<String, Object> userAttributes = getUserAttributes(provider, oAuth2AccessToken);
-        OAuth2UserInfo oauth2UserInfo = null;
-        log.info("providerName: {}", providerName);
-        if(providerName.equals("kakao")){
-            oauth2UserInfo = new KakaoUserInfo(userAttributes);
-        } else if (providerName.equals("google")){
-            oauth2UserInfo = new GoogleUserInfo(userAttributes);
-        } else {
-            log.info("허용되지 않은 접근입니다.");
-        }
-
-        String name = oauth2UserInfo.getName();
-        String email = oauth2UserInfo.getEmail();
-
-        Optional<User> user = userRepository.findByEmail(email);
-
-        if(user.isEmpty()){
-            return userRepository.save(User.builder()
-                    .name(name)
-                    .email(email)
-                    .role(Role.USER)
-                    .status(UserStatus.CREATED)
-                    .createdAt(new Date())
-                    .modifiedAt(new Date())
-                    .build())
-                    ;
-        } else {
-            return user.get();
-        }
-    }
+//    private User getUserProfile(String providerName, String oAuth2AccessToken, ClientRegistration provider){
+//        Map<String, Object> userAttributes = getUserAttributes(provider, oAuth2AccessToken);
+//        OAuth2UserInfo oauth2UserInfo = null;
+//        log.info("providerName: {}", providerName);
+//        if(providerName.equals("kakao")){
+//            oauth2UserInfo = new KakaoUserInfo(userAttributes);
+//        } else if (providerName.equals("google")){
+//            oauth2UserInfo = new GoogleUserInfo(userAttributes);
+//        } else {
+//            log.info("허용되지 않은 접근입니다.");
+//        }
+//
+//        String name = oauth2UserInfo.getName();
+//        String email = oauth2UserInfo.getEmail();
+//
+//        Optional<User> user = userRepository.findByEmail(email);
+//
+//        if(user.isEmpty()){
+//            return userRepository.save(User.builder()
+//                    .name(name)
+//                    .email(email)
+//                    .role(Role.USER)
+//                    .status(UserStatus.CREATED)
+//                    .createdAt(new Date())
+//                    .modifiedAt(new Date())
+//                    .build())
+//                    ;
+//        } else {
+//            return user.get();
+//        }
+//    }
 
     private Map<String, Object> getUserAttributes(ClientRegistration provider, String oAuth2AccessToken){
         return WebClient.create()

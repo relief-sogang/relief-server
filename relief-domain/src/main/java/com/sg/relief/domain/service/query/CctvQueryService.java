@@ -15,6 +15,7 @@ import java.util.List;
 @Service
 @Slf4j
 public class CctvQueryService {
+
     @Autowired
     private CctvRepository cctvRepository;
     /* Find CCTVs in 500m */
