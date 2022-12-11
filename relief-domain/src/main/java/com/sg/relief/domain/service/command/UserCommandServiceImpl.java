@@ -76,12 +76,15 @@ public class UserCommandServiceImpl implements UserCommandService {
                     .build();
             userMappingRepository.save(userMapping);
             responseCodeVO.setCode("SUCCESS");
-            pushNotificationService.sendGuardianRequestPush(user.get().getId(), guardianRequestCommand.getMessage());
-
         }
 
         return responseCodeVO;
 
+    }
+    @Override
+    public void guardianRequestPush (String userId, String message) {
+        Long id = userRepository.findByUserId(userId).get().getId();
+        pushNotificationService.sendGuardianRequestPush(id, message);
     }
 
     @Override

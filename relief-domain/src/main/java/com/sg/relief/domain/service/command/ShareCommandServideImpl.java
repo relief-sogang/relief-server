@@ -1,7 +1,9 @@
 package com.sg.relief.domain.service.command;
 
 import com.sg.relief.domain.persistence.entity.ShareCode;
+import com.sg.relief.domain.persistence.entity.User;
 import com.sg.relief.domain.persistence.repository.ShareCodeRepository;
+import com.sg.relief.domain.persistence.repository.UserRepository;
 import com.sg.relief.domain.service.PushNotificationService;
 import com.sg.relief.domain.service.command.co.HelpRequestCommand;
 import com.sg.relief.domain.service.command.co.SaveLocationCommand;
@@ -26,6 +28,9 @@ public class ShareCommandServideImpl implements ShareCommandService{
     @Autowired
     private ShareCodeRepository shareCodeRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     /* Start share, generate and register code, push notification to guardians */
     @Override
     public ShareStartVO startShare(ShareStartCommand shareStartCommand) {
@@ -37,19 +42,23 @@ public class ShareCommandServideImpl implements ShareCommandService{
                         .lng(0l)
                         .build();
         shareCodeRepository.save(shareCode);
+        Optional<User> user = userRepository.findByUserId(shareStartCommand.getUserId());
+        if (user.isPresent()) {
+            User updateUser = user.get();
+            // updateUser.setStatus();
+        }
+
         pushNotificationService.sendShareStartPush(shareStartCommand.getUserId());
         ShareStartVO shareStartVO = ShareStartVO.builder().code(code).build();
         return shareStartVO;
     }
     /* Save user location 수정 예정 */
-    /*
     public String saveLocation(SaveLocationCommand saveLocationCommand) {
        shareCodeRepository.findByCode(saveLocationCommand.getCode()).ifPresent(shareCode -> {
 
        });
 
     }
-     */
 
     /* 추후 수정 */
     @Override
