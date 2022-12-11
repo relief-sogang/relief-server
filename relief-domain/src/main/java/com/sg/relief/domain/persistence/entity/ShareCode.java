@@ -28,8 +28,8 @@ public class ShareCode {
     private String code;
 
     @Column
-    private Long lat;
+    private Double lat;
 
     @Column
-    private Long lng;
+    private Double lng;
 }
