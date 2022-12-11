@@ -8,5 +8,5 @@ import lombok.Setter;
 @Setter
 @Builder
 public class HelpMessageVO {
-    String code;
+    private String code;
 }

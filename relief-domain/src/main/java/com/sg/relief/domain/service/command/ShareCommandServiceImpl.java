@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-public class ShareCommandServideImpl implements ShareCommandService{
+public class ShareCommandServiceImpl implements ShareCommandService{
 
     @Autowired
     private PushNotificationService pushNotificationService;
@@ -69,7 +69,7 @@ public class ShareCommandServideImpl implements ShareCommandService{
     @Override
     public String generateCode() {
         String code = Integer.toString( (int)(Math.random() * 1000000) );
-        while (shareCodeRepository.findByCode(code).isPresent() == true) {
+        while (shareCodeRepository.findByCode(code).isPresent()) {
             code = Integer.toString( (int)(Math.random() * 1000000) );
         }
         return code;
