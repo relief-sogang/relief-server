@@ -58,6 +58,7 @@ public class ShareCommandServideImpl implements ShareCommandService{
 
        });
 
+       return null;
     }
 
     /* 추후 수정 */

@@ -10,5 +10,5 @@ import java.util.List;
 @Setter
 @Builder
 public class SpotListVO {
-    List<SpotInfoVO> spitList;
+    List<SpotInfoVO> spotList;
 }
