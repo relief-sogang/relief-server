@@ -26,7 +26,7 @@ public class SpotQueryServiceImpl implements SpotQueryService {
                 .build()).collect(Collectors.toList());
 
         return SpotListVO.builder()
-                .spitList(spotInfoVOS)
+                .spotList(spotInfoVOS)
                 .build();
     }
 }
