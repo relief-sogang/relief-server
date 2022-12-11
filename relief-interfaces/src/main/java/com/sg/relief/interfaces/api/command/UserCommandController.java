@@ -2,10 +2,13 @@ package com.sg.relief.interfaces.api.command;
 
 import com.sg.relief.domain.service.command.UserCommandService;
 import com.sg.relief.domain.service.command.co.GuardianRequestCommand;
+import com.sg.relief.domain.service.command.co.HelpMessageRegisterCommand;
 import com.sg.relief.domain.service.command.co.UserDetailCommand;
 import com.sg.relief.domain.service.command.vo.GuardianRequestVO;
+import com.sg.relief.domain.service.command.vo.HelpMessageVO;
 import com.sg.relief.domain.service.command.vo.UserDetailVO;
 import com.sg.relief.interfaces.api.command.dto.GuardianRequestCommandDTO;
+import com.sg.relief.interfaces.api.command.dto.RegisterHelpMessageCommandDTO;
 import com.sg.relief.interfaces.api.command.dto.SignupDetailCommandDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +50,19 @@ public class UserCommandController {
                         .guardianName(guardianRequestCommandDTO.getGuardianName())
                         .message(guardianRequestCommandDTO.getMessage())
                 .build());
+        // PushNotification
+        if (guardianRequestVO.getCode().equals("SUCCESS")) {
+
+        }
         return guardianRequestVO;
+    }
+    @PostMapping("/message")
+    public HelpMessageVO registerHelpMessage(@RequestBody RegisterHelpMessageCommandDTO registerHelpMessageCommandDTO) {
+        HelpMessageRegisterCommand  helpMessageRegisterCommand = HelpMessageRegisterCommand.builder()
+                .userId(registerHelpMessageCommandDTO.getUserId())
+                .message(registerHelpMessageCommandDTO.getMessage())
+                .build();
+        HelpMessageVO helpMessageVO = userCommandService.registerHelpMessage(helpMessageRegisterCommand);
+        return helpMessageVO;
     }
 }

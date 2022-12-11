@@ -17,7 +17,7 @@ public class CctvQueryController {
     @Autowired
     CctvQueryService cctvQueryService;
 
-    @GetMapping("/spot/cctv")
+    @PostMapping("/spot/cctv")
     public CctvListVO findCctv(@RequestBody CctvInfoVO cctvInfoVO) {
         // get lat(xAxis), lng(yAxis) and return cctv list
         CctvListVO cctvListVO = cctvQueryService.findCctvIn500(cctvInfoVO.getXAxis(), cctvInfoVO.getYAxis());

@@ -52,6 +52,8 @@ subprojects {
         implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
         implementation 'org.apache.poi:poi-ooxml:5.2.2'
+
+        implementation 'com.google.firebase:firebase-admin:6.8.1'
     }
 }
 

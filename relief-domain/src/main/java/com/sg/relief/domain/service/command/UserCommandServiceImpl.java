@@ -2,18 +2,26 @@ package com.sg.relief.domain.service.command;
 
 import com.sg.relief.domain.code.UserMappingStatus;
 import com.sg.relief.domain.code.UserStatus;
+import com.sg.relief.domain.model.PushNotificationRequest;
 import com.sg.relief.domain.persistence.entity.User;
 import com.sg.relief.domain.persistence.entity.UserMapping;
+import com.sg.relief.domain.persistence.entity.UserToken;
 import com.sg.relief.domain.persistence.repository.UserMappingRepository;
 import com.sg.relief.domain.persistence.repository.UserRepository;
+import com.sg.relief.domain.persistence.repository.UserTokenRepository;
+import com.sg.relief.domain.service.FCMService;
+import com.sg.relief.domain.service.PushNotificationService;
 import com.sg.relief.domain.service.command.co.GuardianRequestCommand;
+import com.sg.relief.domain.service.command.co.HelpMessageRegisterCommand;
 import com.sg.relief.domain.service.command.co.UserDetailCommand;
 import com.sg.relief.domain.service.command.vo.GuardianRequestVO;
+import com.sg.relief.domain.service.command.vo.HelpMessageVO;
 import com.sg.relief.domain.service.command.vo.UserDetailVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -25,6 +33,9 @@ public class UserCommandServiceImpl implements UserCommandService {
 
     @Autowired
     private UserMappingRepository userMappingRepository;
+
+    @Autowired
+    private PushNotificationService pushNotificationService;
 
     @Override
     public UserDetailVO register(UserDetailCommand userDetailCommand){
@@ -63,9 +74,21 @@ public class UserCommandServiceImpl implements UserCommandService {
                     .build();
             userMappingRepository.save(userMapping);
             guardianRequestVO.setCode("SUCCESS");
+            pushNotificationService.sendGuardianRequestPush(user.get().getId(), guardianRequestCommand.getMessage());
         }
 
         return guardianRequestVO;
 
+    }
+
+    @Override
+    public HelpMessageVO registerHelpMessage(HelpMessageRegisterCommand helpMessageRegisterCommand) {
+        HelpMessageVO helpMessageVO = HelpMessageVO.builder().build();
+        helpMessageVO.setCode("FAIL");
+        userRepository.findByUserId(helpMessageRegisterCommand.getUserId()).ifPresent(user -> {
+            user.setHelpMessage(helpMessageRegisterCommand.getMessage());
+            helpMessageVO.setCode("SUCCESS");
+        });
+        return helpMessageVO;
     }
 }
