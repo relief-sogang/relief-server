@@ -7,6 +7,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum UserStatus {
     CREATED("생성"),
+    ON("ON"),
+    OFF("OFF"),
+    SHARING("위치 공유 상태"),
     COMPLETED( "완료");
 
     private final String description;
