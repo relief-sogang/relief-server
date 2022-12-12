@@ -90,6 +90,14 @@ public class ShareCommandServiceImpl implements ShareCommandService{
     @Override
     public ShareEndVO endShare(ShareEndCommand shareEndCommand) {
         ShareEndVO shareEndVO = ShareEndVO.builder().code("FAIL").build();
+        // sharing -> completed
+        Optional<User> userOptional = userRepository.findByUserId(shareEndCommand.getUserId());
+        if (userOptional.isPresent()) {
+            User userUpdate = userOptional.get();
+            userUpdate.setStatus(UserStatus.COMPLETED);
+            userRepository.save(userUpdate);
+        }
+        // delete code
         shareCodeRepository.findByUserId(shareEndCommand.getUserId()).ifPresent(shareCode -> {
             shareCodeRepository.delete(shareCode);
             shareEndVO.setCode("SUCCESS");
