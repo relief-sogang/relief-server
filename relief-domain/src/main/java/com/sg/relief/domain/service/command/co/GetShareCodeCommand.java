@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class FCMTokenCommand {
+public class GetShareCodeCommand {
     private String userId;
-    private String token;
+    private String protegeId;
 }

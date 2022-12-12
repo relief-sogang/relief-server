@@ -7,6 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class FCMTokenVO {
+public class GetShareCodeVO {
     private String code;
 }

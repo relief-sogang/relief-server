@@ -9,5 +9,5 @@ import lombok.Setter;
 @Setter
 @Builder
 public class ShareStartCommand {
-    String userId;
+    private String userId;
 }

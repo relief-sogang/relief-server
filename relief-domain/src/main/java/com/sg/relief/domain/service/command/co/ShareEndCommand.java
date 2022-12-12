@@ -8,5 +8,5 @@ import lombok.Setter;
 @Setter
 @Builder
 public class ShareEndCommand {
-    String userId;
+    private String userId;
 }
