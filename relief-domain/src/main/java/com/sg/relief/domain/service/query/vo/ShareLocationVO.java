@@ -1,4 +1,4 @@
-package com.sg.relief.domain.service.command.vo;
+package com.sg.relief.domain.service.query.vo;
 
 import lombok.Builder;
 import lombok.Getter;

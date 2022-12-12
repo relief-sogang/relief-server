@@ -7,7 +7,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterHelpMessageCommandDTO {
-    String userId;
-    String message;
+public class HelpReadCommandDTO {
+    private String receiverId;
+    private String messageId;
 }

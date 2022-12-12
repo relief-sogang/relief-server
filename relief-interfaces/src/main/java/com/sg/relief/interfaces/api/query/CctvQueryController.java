@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/query")
 public class CctvQueryController {
     @Autowired
-    CctvQueryService cctvQueryService;
+    private CctvQueryService cctvQueryService;
 
     @PostMapping("/spot/cctv")
     public CctvListVO findCctv(@RequestBody CctvInfoVO cctvInfoVO) {

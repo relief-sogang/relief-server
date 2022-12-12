@@ -7,6 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class GetShareCodeVO {
+public class HelpMessageReadVO {
     private String code;
 }

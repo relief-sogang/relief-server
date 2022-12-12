@@ -82,9 +82,9 @@ public class UserCommandServiceImpl implements UserCommandService {
 
     }
     @Override
-    public void guardianRequestPush (String userId, String message) {
+    public boolean guardianRequestPush (String userId, String message) {
         Long id = userRepository.findByUserId(userId).get().getId();
-        pushNotificationService.sendGuardianRequestPush(id, message);
+        return pushNotificationService.sendGuardianRequestPush(id, message);
     }
 
     @Override

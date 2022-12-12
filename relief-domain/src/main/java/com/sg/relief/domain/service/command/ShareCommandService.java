@@ -9,6 +9,5 @@ public interface ShareCommandService {
     ShareEndVO endShare(ShareEndCommand shareEndCommand);
     HelpRequestVO sendHelp(HelpRequestCommand helpRequestCommand);
     SaveShareLocationVO saveShareLocation(SaveLocationCommand saveLocationCommand);
-    ShareLocationVO getShareLocation(GetShareLocationCommand getShareLocationCommand);
-    GetShareCodeVO getShareCode(GetShareCodeCommand getShareCodeCommand);
+
 }
