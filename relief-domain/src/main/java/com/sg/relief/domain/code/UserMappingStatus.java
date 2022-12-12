@@ -9,7 +9,6 @@ public enum UserMappingStatus {
     REQUEST("신청"),
     ON( "ON"),
     OFF( "OFF"),
-    SHARING( "공유중"),
     REJECT("거절");
 
     private final String description;

@@ -149,7 +149,7 @@ public class UserCommandServiceImpl implements UserCommandService {
 
     @Override
     public ResponseCodeVO guardianAccept(GuardianAcceptCommand guardianAcceptCommand){
-        UserMapping userMapping = userMappingRepository.findByProtegeIdAndGuardianId(guardianAcceptCommand.getUserId(), guardianAcceptCommand.getProtegeId()).get();
+        UserMapping userMapping = userMappingRepository.findByProtegeIdAndGuardianId(guardianAcceptCommand.getProtegeId(), guardianAcceptCommand.getUserId()).get();
         ResponseCodeVO responseCodeVO = ResponseCodeVO.builder().build();
         if(guardianAcceptCommand.getIsAccept()){
             userMapping.setStatus(UserMappingStatus.ON);

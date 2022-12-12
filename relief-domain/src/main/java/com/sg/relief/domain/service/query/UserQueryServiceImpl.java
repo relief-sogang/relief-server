@@ -1,5 +1,7 @@
 package com.sg.relief.domain.service.query;
 
+import com.sg.relief.domain.code.UserMappingStatus;
+import com.sg.relief.domain.code.UserStatus;
 import com.sg.relief.domain.persistence.entity.User;
 import com.sg.relief.domain.persistence.entity.UserMapping;
 import com.sg.relief.domain.persistence.repository.UserMappingRepository;
@@ -9,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,16 +67,48 @@ public class UserQueryServiceImpl implements UserQueryService {
     @Override
     public ProtegeListVO getProtegeList(String userId, String status) {
         List<UserMapping> userMappings = userMappingRepository.findALlByGuardianId(userId);
-        List<ProtegeInfoVO> protegeInfoVOS = userMappings.stream().map(x -> ProtegeInfoVO.builder()
-                .id(x.getProtegeId())
-                .name(x.getProtegeName())
-                .status(x.getStatus().toString())
-                .build()).collect(Collectors.toList());
-
+        List<ProtegeInfoVO> protegeInfoVOS = new ArrayList<>();
         if(status.equals("REQUEST")){
-            protegeInfoVOS.stream().filter(x->x.getStatus().equals("REQUEST")).collect(Collectors.toList());
+            protegeInfoVOS = userMappings.stream()
+                    .filter(x->x.getStatus().equals(UserMappingStatus.REQUEST))
+                    .map(x->{
+                        User user = userRepository.findByUserId(x.getProtegeId()).get();
+                        return ProtegeInfoVO.builder()
+                                .id(x.getProtegeId())
+                                .name(user.getName()) // user 정보에 저장된 이름
+                                .email(user.getEmail())
+                                .status(x.getStatus().toString())
+                                .build();
+                    })
+                    .collect(Collectors.toList());
         } else if (status.equals("SHARING")){
-            protegeInfoVOS.stream().filter(x->x.getStatus().equals("SHARING")).collect(Collectors.toList());
+            protegeInfoVOS = userMappings.stream().filter(x->{
+                if(x.getStatus().equals(UserMappingStatus.ON) && userRepository.findByUserId(x.getProtegeId()).get().getStatus().equals(UserStatus.SHARING)){
+                    return true;
+                } else {
+                    return false;
+                }
+            })
+            .map(x->{
+                User user = userRepository.findByUserId(x.getProtegeId()).get();
+                return ProtegeInfoVO.builder()
+                        .id(x.getProtegeId())
+                        .name(x.getProtegeName()) // user mapping 정보에 저장된 이름
+                        .email(user.getEmail())
+                        .status(x.getStatus().toString())
+                        .build();
+            })
+            .collect(Collectors.toList());
+        } else { // ALL
+            protegeInfoVOS = userMappings.stream().map(x->{
+                User user = userRepository.findByUserId(x.getProtegeId()).get();
+                return ProtegeInfoVO.builder()
+                        .id(x.getProtegeId())
+                        .name(x.getProtegeName()) // user mapping 정보에 저장된 이름
+                        .email(user.getEmail())
+                        .status(x.getStatus().toString())
+                        .build();
+            }).collect(Collectors.toList());
         }
 
         return ProtegeListVO.builder()
