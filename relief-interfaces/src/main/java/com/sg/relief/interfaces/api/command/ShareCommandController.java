@@ -43,6 +43,11 @@ public class ShareCommandController {
         return shareCommandService.saveShareLocation(saveLocationCommand);
     }
 
+    @PostMapping("/share/code")
+    public GetShareCodeVO getShareCode(@RequestBody GetShareCodeCommand getShareCodeCommand) {
+        return shareCommandService.getShareCode(getShareCodeCommand);
+    }
+
     @PostMapping("/share/get")
     public ShareLocationVO getShareLocation(@RequestBody GetShareLocationCommand getShareLocationCommand) {
         return shareCommandService.getShareLocation(getShareLocationCommand);

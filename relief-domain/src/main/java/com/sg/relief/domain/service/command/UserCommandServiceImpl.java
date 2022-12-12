@@ -166,13 +166,14 @@ public class UserCommandServiceImpl implements UserCommandService {
     @Override
     public ResponseCodeVO renameProtege(String userId, String protegeId, String rename){
         Optional<UserMapping> userMapping = userMappingRepository.findByProtegeIdAndGuardianId(protegeId, userId);
+        ResponseCodeVO responseCodeVO = ResponseCodeVO.builder().code("FAIL").build();
         if(userMapping.isPresent()){
             UserMapping updateMapping = userMapping.get();
             updateMapping.setProtegeName(rename);
+            userMappingRepository.save(updateMapping);
+            responseCodeVO.setCode("SUCCESS");
         }
-        return ResponseCodeVO.builder()
-                .code("SUCCESS")
-                .build();
+        return responseCodeVO;
     }
 
     @Override
