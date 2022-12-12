@@ -5,6 +5,7 @@ import com.sg.relief.domain.code.UserStatus;
 import com.sg.relief.domain.persistence.entity.ShareCode;
 import com.sg.relief.domain.persistence.entity.User;
 import com.sg.relief.domain.persistence.entity.UserMapping;
+import com.sg.relief.domain.persistence.repository.HelpMessageRepository;
 import com.sg.relief.domain.persistence.repository.ShareCodeRepository;
 import com.sg.relief.domain.persistence.repository.UserMappingRepository;
 import com.sg.relief.domain.persistence.repository.UserRepository;
@@ -32,6 +33,9 @@ public class ShareCommandServiceImpl implements ShareCommandService{
 
     @Autowired
     private UserMappingRepository userMappingRepository;
+
+    @Autowired
+    private HelpMessageRepository helpMessageRepository;
 
     /* Start share, generate and register code, push notification to guardians */
     @Override
@@ -81,6 +85,7 @@ public class ShareCommandServiceImpl implements ShareCommandService{
         return code;
     }
 
+
     /* End share, delete code, push notification to guardians */
     @Override
     public ShareEndVO endShare(ShareEndCommand shareEndCommand) {
@@ -95,38 +100,14 @@ public class ShareCommandServiceImpl implements ShareCommandService{
 
     @Override
     public HelpRequestVO sendHelp(HelpRequestCommand helpRequestCommand) {
-        // 수정 필요한 부분 -> 도움요청 메시지 저장. 한 명 이상에게 알림 갔는지 여부 확인
-        HelpRequestVO helpRequestVO = HelpRequestVO.builder().code("SUCCESS").build();
-        pushNotificationService.sendHelpPush(helpRequestCommand.getUserId());
+        // 푸시알림 전송 요청이 성공한 경우에만 메시지가 저장됨.
+        HelpRequestVO helpRequestVO = HelpRequestVO.builder().code("FAIL").build();
+        // 모든 보호자에게 보호 요청을 보내고, 한 명 이상 푸시알림이 성공하면 true, 아니면 false
+        if (pushNotificationService.sendHelpPush(helpRequestCommand.getUserId())) {
+            helpRequestVO.setCode("SUCCESS");
+        }
         return helpRequestVO;
     }
-    @Override
-    public ShareLocationVO getShareLocation(GetShareLocationCommand getShareLocationCommand) {
-        Optional<ShareCode> shareCode = shareCodeRepository.findByCode(getShareLocationCommand.getCode());
-        ShareLocationVO shareLocationVO = ShareLocationVO.builder().build();
-        if (shareCode.isPresent()) {
-            ShareCode share = shareCode.get();
-            shareLocationVO.setLat(Double.toString(share.getLat()));
-            shareLocationVO.setLng(Double.toString(share.getLng()));
-        }
-        return shareLocationVO;
-    }
 
-    /* mapping on인 상태이고, 해당 유저가 위치를 공유중 일때만 코드 보내기 가능. */
-    @Override
-    public GetShareCodeVO getShareCode(GetShareCodeCommand getShareCodeCommand) {
-        Optional <UserMapping> userMappingOptional = userMappingRepository.findByProtegeIdAndGuardianId(
-                getShareCodeCommand.getProtegeId(), getShareCodeCommand.getUserId());
-        Optional<User> protegeIdOptional = userRepository.findByUserId(getShareCodeCommand.getProtegeId());
-        GetShareCodeVO getShareCodeVO = GetShareCodeVO.builder().code("0").build();
-        if (userMappingOptional.isPresent() && protegeIdOptional.isPresent()) {
-            UserMapping userMapping = userMappingOptional.get();
-            User protege = protegeIdOptional.get();
-            if (userMapping.getStatus().equals(UserMappingStatus.ON) && protege.getStatus().equals(UserStatus.SHARING)) {
-                getShareCodeVO.setCode(shareCodeRepository.findByUserId(protege.getUserId()).get().getCode());
-            }
-        }
-        return getShareCodeVO;
-    }
 
 }
