@@ -40,6 +40,7 @@ public class ShareCommandServiceImpl implements ShareCommandService{
     /* Start share, generate and register code, push notification to guardians */
     @Override
     public ShareStartVO startShare(ShareStartCommand shareStartCommand) {
+        ShareStartVO shareStartVO = ShareStartVO.builder().code("0").build();
         String code = generateCode();
         ShareCode shareCode = ShareCode.builder()
                         .userId(shareStartCommand.getUserId())
@@ -47,16 +48,15 @@ public class ShareCommandServiceImpl implements ShareCommandService{
                         .lat(0.0)
                         .lng(0.0)
                         .build();
-        shareCodeRepository.save(shareCode);
         Optional<User> user = userRepository.findByUserId(shareStartCommand.getUserId());
         if (user.isPresent()) {
             User updateUser = user.get();
             updateUser.setStatus(UserStatus.SHARING);
             userRepository.save(updateUser);
+            shareCodeRepository.save(shareCode);
+            shareStartVO.setCode(code);
+            pushNotificationService.sendShareStartPush(shareStartCommand.getUserId());
         }
-
-        pushNotificationService.sendShareStartPush(shareStartCommand.getUserId());
-        ShareStartVO shareStartVO = ShareStartVO.builder().code(code).build();
         return shareStartVO;
     }
 
