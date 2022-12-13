@@ -1,9 +1,11 @@
 package com.sg.relief.interfaces.api.query;
 
 import com.sg.relief.domain.service.query.HelpQueryService;
+import com.sg.relief.domain.service.query.vo.HelpMessageInfoVO;
 import com.sg.relief.domain.service.query.vo.HelpReceiveCountVO;
 import com.sg.relief.domain.service.query.vo.HelpReceiveListVO;
 import com.sg.relief.domain.service.query.vo.HelpSendListVO;
+import com.sg.relief.interfaces.api.query.dto.HelpMessageInfoQueryDTO;
 import com.sg.relief.interfaces.api.query.dto.HelpReceiveCountQueryDTO;
 import com.sg.relief.interfaces.api.query.dto.HelpReceiveListQueryDTO;
 import com.sg.relief.interfaces.api.query.dto.HelpSendListQueryDTO;
@@ -34,5 +36,9 @@ public class HelpQueryController {
     @PostMapping("/receive/count")
     public HelpReceiveCountVO getHelpReceiveCount(@RequestBody HelpReceiveCountQueryDTO helpReceiveCountQueryDTO) {
         return helpQueryService.getHelpReceiveCount(helpReceiveCountQueryDTO.getReceiverId());
+    }
+    @PostMapping("/message")
+    public HelpMessageInfoVO getHelpMessage (@RequestBody HelpMessageInfoQueryDTO helpMessageInfoQueryDTO) {
+        return helpQueryService.getHelpMessage(helpMessageInfoQueryDTO.getUserId());
     }
 }
