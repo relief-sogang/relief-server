@@ -16,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -98,11 +100,16 @@ public class ShareCommandServiceImpl implements ShareCommandService{
             userRepository.save(userUpdate);
         }
         // delete code
-        shareCodeRepository.findByUserId(shareEndCommand.getUserId()).ifPresent(shareCode -> {
-            shareCodeRepository.delete(shareCode);
+        // delete all if it has multiple ShareCode (개발 테스트 시 여러번 호출 시 여러 개 생김)
+        List<ShareCode> allCode = shareCodeRepository.findAllByUserId(shareEndCommand.getUserId());
+        Iterator<ShareCode> it = allCode.iterator();
+        while (it.hasNext()) {
+            shareCodeRepository.delete(it.next());
+        }
+        if (allCode.stream().findAny().isPresent()) {
+            pushNotificationService.sendShareEndPush(shareEndCommand.getUserId());
             shareEndVO.setCode("SUCCESS");
-        });
-        pushNotificationService.sendShareEndPush(shareEndCommand.getUserId());
+        }
         return shareEndVO;
     }
 
