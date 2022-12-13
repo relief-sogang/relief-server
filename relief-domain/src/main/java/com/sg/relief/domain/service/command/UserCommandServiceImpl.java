@@ -47,6 +47,7 @@ public class UserCommandServiceImpl implements UserCommandService {
         if(user.isPresent()){
             User updateUser = user.get();
             updateUser.setUserId(userDetailCommand.getUserId());
+            updateUser.setName(userDetailCommand.getUserName());
             updateUser.setPhoneNumber(userDetailCommand.getPhoneNumber());
             updateUser.setStatus(UserStatus.COMPLETED);
             userRepository.save(updateUser);

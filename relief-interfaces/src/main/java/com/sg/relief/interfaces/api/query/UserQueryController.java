@@ -1,10 +1,7 @@
 package com.sg.relief.interfaces.api.query;
 
 import com.sg.relief.domain.service.query.UserQueryService;
-import com.sg.relief.domain.service.query.vo.GuardianInfoVO;
-import com.sg.relief.domain.service.query.vo.GuardianListVO;
-import com.sg.relief.domain.service.query.vo.ProtegeListVO;
-import com.sg.relief.domain.service.query.vo.UserIdCheckVO;
+import com.sg.relief.domain.service.query.vo.*;
 import com.sg.relief.interfaces.api.query.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +41,12 @@ public class UserQueryController {
         ProtegeListVO protegeListVO = userQueryService.getProtegeList(protegeListQueryDTO.getUserId(),
                 protegeListQueryDTO.getStatus());
         return protegeListVO;
+    }
+
+    @PostMapping("/pushalarm/getstatus")
+    public UserAlarmStatusVO userAlarmStatus(@RequestBody UserQueryDTO userQueryDTO){
+        UserAlarmStatusVO userAlarmStatusVO = userQueryService.getUserAlarmStatus(userQueryDTO.getUserId());
+        return userAlarmStatusVO;
     }
 
 }

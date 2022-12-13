@@ -120,4 +120,16 @@ public class UserQueryServiceImpl implements UserQueryService {
                 .protegeList(protegeInfoVOS)
                 .build();
     }
+
+    @Override
+    public UserAlarmStatusVO getUserAlarmStatus(String userId){
+        Optional<User> user = userRepository.findByUserId(userId);
+        String status = "";
+        if(user.isPresent()){
+            status = user.get().getActiveAlarm() ? "ON" : "OFF";
+        }
+        return UserAlarmStatusVO.builder()
+                .status(status)
+                .build();
+    }
 }

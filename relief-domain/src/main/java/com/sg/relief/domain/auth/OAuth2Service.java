@@ -97,7 +97,9 @@ public class OAuth2Service {
 
         return LoginResponse.builder()
                 .id(createUser.getId())
+                .userId(createUser.getUserId())
                 .name(createUser.getName())
+                .phoneNumber(createUser.getPhoneNumber())
                 .email(createUser.getEmail())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)

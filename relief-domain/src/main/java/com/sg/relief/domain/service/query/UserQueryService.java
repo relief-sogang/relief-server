@@ -1,9 +1,6 @@
 package com.sg.relief.domain.service.query;
 
-import com.sg.relief.domain.service.query.vo.GuardianInfoVO;
-import com.sg.relief.domain.service.query.vo.GuardianListVO;
-import com.sg.relief.domain.service.query.vo.ProtegeListVO;
-import com.sg.relief.domain.service.query.vo.UserIdCheckVO;
+import com.sg.relief.domain.service.query.vo.*;
 
 public interface UserQueryService {
     UserIdCheckVO findId(String id);
@@ -12,4 +9,5 @@ public interface UserQueryService {
 
     ProtegeListVO getProtegeList(String userId, String status);
 //    ProtegeListVO getSharingList(String userId);
+    UserAlarmStatusVO getUserAlarmStatus(String userId);
 }
