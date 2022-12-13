@@ -47,18 +47,4 @@ public class ShareServiceTests {
         System.out.println("shareStartVO.getCode() = " + shareStartVO.getCode());
         System.out.println("jsonOutput = " + jsonOutput);
     }
-    @Test
-    public void restTest() {
-        List<HttpMessageConverter<?>> converters = new ArrayList<HttpMessageConverter<?>>();
-        converters.add(new FormHttpMessageConverter());
-        converters.add(new StringHttpMessageConverter());
-        converters.add(new GsonHttpMessageConverter());
-
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.setMessageConverters(converters);
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-        map.add("userId", "Ahyoung");
-        String result = restTemplate.postForObject("http://localhost:8080/api/command/spot/share/start", map, String.class);
-        System.out.println("result = " + result);
-    }
 }
