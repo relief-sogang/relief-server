@@ -94,6 +94,7 @@ public class UserCommandServiceImpl implements UserCommandService {
         helpMessageVO.setCode("FAIL");
         userRepository.findByUserId(helpMessageRegisterCommand.getUserId()).ifPresent(user -> {
             user.setHelpMessage(helpMessageRegisterCommand.getMessage());
+            userRepository.save(user);
             helpMessageVO.setCode("SUCCESS");
         });
         return helpMessageVO;
