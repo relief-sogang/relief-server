@@ -3,6 +3,7 @@ package com.sg.relief.domain.service;
 import com.sg.relief.domain.code.HelpMessageStatus;
 import com.sg.relief.domain.model.PushNotificationRequest;
 import com.sg.relief.domain.persistence.entity.HelpMessage;
+import com.sg.relief.domain.persistence.entity.User;
 import com.sg.relief.domain.persistence.entity.UserMapping;
 import com.sg.relief.domain.persistence.entity.UserToken;
 import com.sg.relief.domain.persistence.repository.HelpMessageRepository;
@@ -79,10 +80,16 @@ public class PushNotificationService {
         Iterator <UserMapping> it = userMappingList.iterator();
         while (it.hasNext()) {
             UserMapping userMapping = it.next();
-            String token = userTokenRepository.findByUserId(userRepository.findByUserId(userMapping.getGuardianId()).get().getId()).get().getFcmToken();
-            request.setMessage(userMapping.getProtegeName() + request.getMessage());
-            request.setToken(token);
-            sendPushNotificationToToken(request);
+            Optional<User> userOptional = userRepository.findByUserId(userMapping.getGuardianId());
+            if (userOptional.isPresent()) {
+                Optional<UserToken> userTokenOptional = userTokenRepository.findByUserId(userOptional.get().getId());
+                if (userTokenOptional.isPresent()) {
+                    String token = userTokenOptional.get().getFcmToken();
+                    request.setMessage(userMapping.getProtegeName() + request.getMessage());
+                    request.setToken(token);
+                    sendPushNotificationToToken(request);
+                }
+            }
         }
     }
 
@@ -91,17 +98,31 @@ public class PushNotificationService {
         Iterator <UserMapping> it = userMappingList.iterator();
         // 한 명 이상에게 가면 true 반환함. push 알림 요청이 간 경우만 메시지를 저장함.
         boolean b = false;
+        // 메시지를 설정함.
+        String message = "위치를 보고 도와주세요! 긴급한 상황입니다!";
+        Optional<UserMapping> first = userMappingList.stream().findFirst();
+        if (first.isPresent()) {
+            Optional<User> userOptional = userRepository.findByUserId(first.get().getProtegeId());
+            if (userOptional.isPresent()) {
+                if (userOptional.get().getHelpMessage() != null)
+                    message = userOptional.get().getHelpMessage();
+            }
+        }
+        // 리스트 내 토큰을 가진 보호자에게 보내기. 한 번이라도 성공 시 true;
         while (it.hasNext()) {
             UserMapping userMapping = it.next();
-            String message = "위치를 보고 도와주세요! 긴급한 상황입니다!";
-            if (userRepository.findByUserId(userMapping.getProtegeId()).get().getHelpMessage() != null)
-                message = userRepository.findByUserId(userMapping.getProtegeId()).get().getHelpMessage();
-            String token = userTokenRepository.findByUserId(userRepository.findByUserId(userMapping.getGuardianId()).get().getId()).get().getFcmToken();
-            request.setMessage(userMapping.getProtegeName()+ ": " + message);
-            request.setToken(token);
-            if (sendPushNotificationToToken(request)) {
-                saveHelpMessage(userMapping.getProtegeId(), userMapping.getGuardianId(), message);
-                b = true;
+            Optional<User> guardianOptional = userRepository.findByUserId(userMapping.getGuardianId());
+            if (guardianOptional.isPresent()) {
+                Optional<UserToken> guardianTokenOptional = userTokenRepository.findByUserId(guardianOptional.get().getId());
+                if (guardianTokenOptional.isPresent()) {
+                    String token = guardianTokenOptional.get().getFcmToken();
+                    request.setMessage(userMapping.getProtegeName() + ": " + message);
+                    request.setToken(token);
+                    if (sendPushNotificationToToken(request)) {
+                        saveHelpMessage(userMapping.getProtegeId(), userMapping.getGuardianId(), message);
+                        b = true;
+                    }
+                }
             }
         }
         return b;
