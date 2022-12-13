@@ -2,9 +2,11 @@ package com.sg.relief.domain.service.query;
 
 import com.sg.relief.domain.code.HelpMessageStatus;
 import com.sg.relief.domain.persistence.entity.HelpMessage;
+import com.sg.relief.domain.persistence.entity.User;
 import com.sg.relief.domain.persistence.entity.UserMapping;
 import com.sg.relief.domain.persistence.repository.HelpMessageRepository;
 import com.sg.relief.domain.persistence.repository.UserMappingRepository;
+import com.sg.relief.domain.persistence.repository.UserRepository;
 import com.sg.relief.domain.service.query.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,9 @@ public class HelpQueryServiceImpl implements HelpQueryService{
     private HelpMessageRepository helpMessageRepository;
     @Autowired
     private UserMappingRepository userMappingRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public HelpSendListVO getHelpSendList(String senderId) {
@@ -76,6 +81,19 @@ public class HelpQueryServiceImpl implements HelpQueryService{
         Long count = helpMessageList.stream()
                 .filter(m -> m.getCheckStatus().equals(HelpMessageStatus.N)).count();
         return HelpReceiveCountVO.builder().count(Long.toString(count)).build();
+    }
+
+    @Override
+    public HelpMessageInfoVO getHelpMessage(String userId) {
+        HelpMessageInfoVO helpMessageInfoVO = HelpMessageInfoVO.builder().message("").build();
+        Optional<User> userOptional = userRepository.findByUserId(userId);
+        if (userOptional.isPresent()) {
+            String message = userOptional.get().getHelpMessage();
+            if (message != null) {
+                helpMessageInfoVO.setMessage(message);
+            }
+        }
+        return helpMessageInfoVO;
     }
 
 
