@@ -21,6 +21,8 @@ public class UserRepositoryTests {
     public void userDeleteTest() {
         //List<User> userList =  userRepository.findAll();
         //System.out.println("userList = " + userList);
+
+        /*
         Optional<User> ayay = userRepository.findByUserId("Ayay");
         Optional<User> ahyoung = userRepository.findByUserId("ahyoung");
         ayay.ifPresent(u -> {
@@ -29,5 +31,6 @@ public class UserRepositoryTests {
         ahyoung.ifPresent(u -> {
             userRepository.delete(u);
         });
+         */
     }
 }
