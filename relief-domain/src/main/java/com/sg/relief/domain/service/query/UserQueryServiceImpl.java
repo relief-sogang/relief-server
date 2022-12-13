@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -83,11 +84,15 @@ public class UserQueryServiceImpl implements UserQueryService {
                     .collect(Collectors.toList());
         } else if (status.equals("SHARING")){
             protegeInfoVOS = userMappings.stream().filter(x->{
-                if(x.getStatus().equals(UserMappingStatus.ON) && userRepository.findByUserId(x.getProtegeId()).get().getStatus().equals(UserStatus.SHARING)){
-                    return true;
-                } else {
-                    return false;
+                if(x.getStatus().equals(UserMappingStatus.ON)) {
+                    Optional<User> user = userRepository.findByUserId(x.getProtegeId());
+                    if (user.isPresent()) {
+                        if (user.get().getStatus().equals(UserStatus.SHARING)) {
+                            return true;
+                        }
+                    }
                 }
+                return false;
             })
             .map(x->{
                 User user = userRepository.findByUserId(x.getProtegeId()).get();
