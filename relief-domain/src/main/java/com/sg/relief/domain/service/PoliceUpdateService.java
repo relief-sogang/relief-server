@@ -94,6 +94,7 @@ public class PoliceUpdateService {
             JsonObject targetObject = jsonArray.get(0).getAsJsonObject();
             String x = targetObject.get("x").toString();
             String y = targetObject.get("y").toString();
+            // "23.234"와 같이 불필요한 "이 들어가는 코드임. -> 이후 db와 소통하여 값 보내줄 때 \"를 없애도록 바꿈.
             System.out.println("x = " + x + " y = " + y);
             return new String[] {x, y};
         }
