@@ -23,4 +23,5 @@ public interface UserCommandService {
     FCMTokenVO receiveFCMToken (FCMTokenCommand fcmTokenCommand);
 
     boolean guardianRequestPush (String userId, String message);
+    ResponseCodeVO deleteUser(String userId);
 }

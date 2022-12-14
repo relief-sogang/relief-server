@@ -10,6 +10,7 @@ import com.sg.relief.domain.service.command.vo.UserDetailVO;
 import com.sg.relief.interfaces.api.command.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,6 +131,12 @@ public class UserCommandController {
     public ResponseCodeVO pushAlarmStatus(@RequestBody UserPushAlarmCommandDTO userPushAlarmCommandDTO){
         ResponseCodeVO responseCodeVO = userCommandService.pushAlarmStatus(userPushAlarmCommandDTO.getUserId(),
                 userPushAlarmCommandDTO.getStatus());
+        return responseCodeVO;
+    }
+
+    @PostMapping("/member/withdraw")
+    public ResponseCodeVO deleteMember(@RequestBody UserDeleteDTO userDeleteDTO){
+        ResponseCodeVO responseCodeVO = userCommandService.deleteUser(userDeleteDTO.getUserId());
         return responseCodeVO;
     }
 }

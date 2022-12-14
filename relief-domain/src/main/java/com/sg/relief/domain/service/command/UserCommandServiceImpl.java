@@ -3,12 +3,8 @@ package com.sg.relief.domain.service.command;
 import com.sg.relief.domain.code.UserMappingStatus;
 import com.sg.relief.domain.code.UserStatus;
 import com.sg.relief.domain.model.PushNotificationRequest;
-import com.sg.relief.domain.persistence.entity.User;
-import com.sg.relief.domain.persistence.entity.UserMapping;
-import com.sg.relief.domain.persistence.entity.UserToken;
-import com.sg.relief.domain.persistence.repository.UserMappingRepository;
-import com.sg.relief.domain.persistence.repository.UserRepository;
-import com.sg.relief.domain.persistence.repository.UserTokenRepository;
+import com.sg.relief.domain.persistence.entity.*;
+import com.sg.relief.domain.persistence.repository.*;
 import com.sg.relief.domain.service.FCMService;
 import com.sg.relief.domain.service.PushNotificationService;
 import com.sg.relief.domain.service.command.vo.FCMTokenVO;
@@ -17,6 +13,7 @@ import com.sg.relief.domain.service.command.vo.ResponseCodeVO;
 import com.sg.relief.domain.service.command.vo.HelpMessageVO;
 import com.sg.relief.domain.service.command.vo.UserDetailVO;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,8 +33,19 @@ public class UserCommandServiceImpl implements UserCommandService {
 
     @Autowired
     private UserTokenRepository userTokenRepository;
+
     @Autowired
     private PushNotificationService pushNotificationService;
+
+    @Autowired
+    private HelpMessageRepository helpMessageRepository;
+
+    @Autowired
+    private ShareCodeRepository shareCodeRepository;
+
+    @Autowired
+    private UserSpotRepository userSpotRepository;
+
 
     @Override
     public UserDetailVO register(UserDetailCommand userDetailCommand){
@@ -222,6 +230,46 @@ public class UserCommandServiceImpl implements UserCommandService {
         return ResponseCodeVO.builder()
                 .code("SUCCESS")
                 .build();
+    }
+
+    @Override
+    public ResponseCodeVO deleteUser(String userId){
+        Optional<User> user = userRepository.findByUserId(userId);
+        if(user.isPresent()){
+            // 토큰 삭제
+            Long userIdToken = user.get().getId();
+            userTokenRepository.delete(userTokenRepository.findByUserId(userIdToken).get());
+
+            // 회원 정보 삭제
+            userRepository.delete(user.get());
+        }
+
+        //mapping 정보 삭제
+        List<UserMapping> userMappingProtegeList = userMappingRepository.findAllByProtegeId(userId);
+        userMappingRepository.deleteAll(userMappingProtegeList);
+        List<UserMapping> userMappingsGuardianList = userMappingRepository.findALlByGuardianId(userId);
+        userMappingRepository.deleteAll(userMappingsGuardianList);
+
+        // 도움 메시지 삭제
+        List<HelpMessage> helpMessageSender = helpMessageRepository.findAllBySenderId(userId);
+        helpMessageRepository.deleteAll(helpMessageSender);
+        List<HelpMessage> helpMessageReceiver = helpMessageRepository.findAllByReceiverId(userId);
+        helpMessageRepository.deleteAll(helpMessageReceiver);
+
+        // share code 삭제
+        Optional<ShareCode> shareCodes = shareCodeRepository.findByUserId(userId);
+        if(shareCodes.isPresent()){
+            shareCodeRepository.delete(shareCodes.get());
+        }
+
+        // 스크랩 장소 삭제
+        List<UserSpot> userSpots = userSpotRepository.findAllByUserId(userId);
+        userSpotRepository.deleteAll(userSpots);
+
+        return ResponseCodeVO.builder()
+                .code("SUCCESS")
+                .build();
+
     }
 
 }
