@@ -36,8 +36,7 @@ public class CctvUpdateService {
         try {
             InputStream stream = new FileInputStream(excelFile);
             XSSFWorkbook wb = new XSSFWorkbook(stream);
-            XSSFSheet worksheet = wb.getSheetAt(0);
-            // assertNotNull(worksheet);
+            XSSFSheet worksheet = wb.getSheetAt(1);
             for (int i = 1; i<worksheet.getPhysicalNumberOfRows(); i++) {
                 XSSFRow row = worksheet.getRow(i);
                 String purpose = row.getCell(4).getStringCellValue();
