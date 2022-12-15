@@ -5,6 +5,8 @@ import com.sg.relief.domain.service.command.co.*;
 import com.sg.relief.domain.service.command.vo.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ShareCommandController {
     @Autowired
     private ShareCommandService shareCommandService;
-
+    Logger logger = LoggerFactory.getLogger(ShareCommandController.class);
     @PostMapping("/share/start")
     public ShareStartVO startShare(@RequestBody ShareStartCommand shareStartCommand) {
         ShareStartVO shareStartVO = shareCommandService.startShare(shareStartCommand);
@@ -34,6 +36,7 @@ public class ShareCommandController {
 
     @PostMapping("/share/help")
     public HelpRequestVO sendHelp(@RequestBody HelpRequestCommand helpRequestCommand) {
+        logger.info("sad"+helpRequestCommand.getUserId());
         HelpRequestVO helpRequestVO = shareCommandService.sendHelp(helpRequestCommand);
         return helpRequestVO;
     }

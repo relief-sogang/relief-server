@@ -3,7 +3,9 @@ package com.sg.relief.domain.service;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sg.relief.domain.persistence.entity.User;
+import com.sg.relief.domain.persistence.entity.UserMapping;
 import com.sg.relief.domain.persistence.entity.UserToken;
+import com.sg.relief.domain.persistence.repository.UserMappingRepository;
 import com.sg.relief.domain.persistence.repository.UserRepository;
 import com.sg.relief.domain.persistence.repository.UserTokenRepository;
 import com.sg.relief.domain.service.command.ShareCommandService;
@@ -39,6 +41,8 @@ public class ShareServiceTests {
     private UserRepository userRepository;
     @Autowired
     private UserTokenRepository userTokenRepository;
+    @Autowired
+    private UserMappingRepository userMappingRepository;
     @Test
     public void generateCode() {
         String code = shareCommandService.generateCode();
@@ -57,14 +61,38 @@ public class ShareServiceTests {
     @Test
     public void sendHelp() {
         HelpRequestCommand helpRequestCommand = HelpRequestCommand.builder()
-                .userId("Ahyoung")
+                .userId("geonho")
                 .build();
         List<UserToken> userTokens = userTokenRepository.findAllByUserId(userRepository.findByUserId("Ahyoung").get().getId());
         Iterator <UserToken> it = userTokens.iterator();
         while (it.hasNext()) {
-            System.out.println("has token = " + it.next().getFcmToken());
+            UserToken userToken = it.next();
+            System.out.println("has token = " + userToken.getFcmToken() + userToken.getRefreshToken() + userToken.getUserId());
         }
         HelpRequestVO helpRequestVO = shareCommandService.sendHelp(helpRequestCommand);
         System.out.println("helpRequestVO code = " + helpRequestVO.getCode());
+    }
+    @Test
+    public void showAllTokenInfo () {
+        List<User> all = userRepository.findAll();
+        Iterator<User> userIt = all.iterator();
+        while (userIt.hasNext()) {
+            User next = userIt.next();
+            System.out.println("userName= " + next.getUserId());
+            List<UserToken> userTokenList = userTokenRepository.findAllByUserId(next.getId());
+            Iterator<UserToken> userTokenIterator = userTokenList.iterator();
+            while (userTokenIterator.hasNext()) {
+                UserToken nextToken = userTokenIterator.next();
+                System.out.println("has " + nextToken.getFcmToken());
+                System.out.println("another tokenInfo: " + nextToken.getRefreshToken());
+            }
+            List<UserMapping> userMappingList = userMappingRepository.findAllByProtegeId(next.getUserId());
+            Iterator <UserMapping> userMappingIterator = userMappingList.iterator();
+            while (userMappingIterator.hasNext()) {
+                UserMapping userMapping = userMappingIterator.next();
+                System.out.println("userMapping.getGuardianName() = " + userMapping.getGuardianName());
+            }
+            System.out.println("-----------------------------------------------------------");
+        }
     }
 }

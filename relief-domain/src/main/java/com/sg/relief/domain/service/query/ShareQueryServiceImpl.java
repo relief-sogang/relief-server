@@ -37,6 +37,10 @@ public class ShareQueryServiceImpl implements ShareQueryService {
             shareLocationVO.setLat(Double.toString(share.getLat()));
             shareLocationVO.setLng(Double.toString(share.getLng()));
         }
+        else {
+            shareLocationVO.setLat("0");
+            shareLocationVO.setLng("0");
+        }
         return shareLocationVO;
     }
 
