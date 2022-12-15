@@ -22,7 +22,7 @@ public class PoliceQueryController {
     @PostMapping("/spot/police")
     public PoliceListVO findPolice (@RequestBody PoliceListQueryDTO policeListQueryDTO) {
         return policeQueryService.findPoliceIn500(
-                Double.parseDouble(policeListQueryDTO.getLat()), Double.parseDouble(policeListQueryDTO.getLng())
+                Double.parseDouble(policeListQueryDTO.getLat()), Double.parseDouble(policeListQueryDTO.getLng()), policeListQueryDTO.getUserId()
         );
     }
 }

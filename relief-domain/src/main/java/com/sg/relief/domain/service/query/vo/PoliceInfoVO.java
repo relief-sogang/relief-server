@@ -12,4 +12,5 @@ public class PoliceInfoVO {
     private String address;
     private String lat;
     private String lng;
+    private String spot;
 }

@@ -2,9 +2,11 @@ package com.sg.relief.domain.service;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.sg.relief.domain.persistence.entity.ShareCode;
 import com.sg.relief.domain.persistence.entity.User;
 import com.sg.relief.domain.persistence.entity.UserMapping;
 import com.sg.relief.domain.persistence.entity.UserToken;
+import com.sg.relief.domain.persistence.repository.ShareCodeRepository;
 import com.sg.relief.domain.persistence.repository.UserMappingRepository;
 import com.sg.relief.domain.persistence.repository.UserRepository;
 import com.sg.relief.domain.persistence.repository.UserTokenRepository;
@@ -13,6 +15,8 @@ import com.sg.relief.domain.service.command.co.HelpRequestCommand;
 import com.sg.relief.domain.service.command.co.ShareStartCommand;
 import com.sg.relief.domain.service.command.vo.HelpRequestVO;
 import com.sg.relief.domain.service.command.vo.ShareStartVO;
+import com.sg.relief.domain.service.query.ShareQueryService;
+import com.sg.relief.domain.service.query.vo.ShareCodeVO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,11 +42,15 @@ public class ShareServiceTests {
     @Autowired
     private ShareCommandService shareCommandService;
     @Autowired
+    private ShareQueryService shareQueryService;
+    @Autowired
     private UserRepository userRepository;
     @Autowired
     private UserTokenRepository userTokenRepository;
     @Autowired
     private UserMappingRepository userMappingRepository;
+    @Autowired
+    private ShareCodeRepository shareCodeRepository;
     @Test
     public void generateCode() {
         String code = shareCommandService.generateCode();
@@ -57,6 +65,13 @@ public class ShareServiceTests {
         String jsonOutput = gson.toJson(shareStartVO);
         System.out.println("shareStartVO.getCode() = " + shareStartVO.getCode());
         System.out.println("jsonOutput = " + jsonOutput);
+    }
+    @Test
+    public void getShareCode() {
+        String userId = "Ahyoung";
+        String protegeId = "geonho";
+        ShareCodeVO shareCode = shareQueryService.getShareCode(userId, protegeId);
+        System.out.println("shareCode.getCode() = " + shareCode.getCode());
     }
     @Test
     public void sendHelp() {

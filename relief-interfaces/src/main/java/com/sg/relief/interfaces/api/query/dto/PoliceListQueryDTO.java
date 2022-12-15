@@ -10,4 +10,5 @@ import lombok.*;
 public class PoliceListQueryDTO {
     private String lat;
     private String lng;
+    private String userId;
 }
